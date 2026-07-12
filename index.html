@@ -69,6 +69,7 @@
       visibility: hidden;
       pointer-events: none;
       transition: opacity 520ms ease, visibility 0s linear 520ms;
+      contain: layout paint style;
     }
 
     .screen.is-active {
@@ -89,6 +90,12 @@
       display: block;
       user-select: none;
       -webkit-user-drag: none;
+    }
+
+    .screen.is-active img,
+    .screen.is-active .together-wave,
+    .screen.is-active .avatar-pulse {
+      will-change: transform, opacity;
     }
 
     .screen-art {
@@ -1443,9 +1450,9 @@
           <li>收藏是“标记意图”，越存越废</li>
         </ul>
         <p class="why-conclusion">内容很多，但真实的人，被淹没了<br>缺少一个以「我」为中心的出口</p>
-        <img class="content-type-card content-type-checkin" src="assets/content-types/check-in.png" alt="打卡内容示例">
-        <img class="content-type-card content-type-review" src="assets/content-types/review.png" alt="评价内容示例">
-        <img class="content-type-card content-type-note" src="assets/content-types/note.png" alt="笔记内容示例">
+        <img class="content-type-card content-type-checkin" data-src="assets/content-types/check-in.webp" loading="lazy" decoding="async" alt="打卡内容示例">
+        <img class="content-type-card content-type-review" data-src="assets/content-types/review.webp" loading="lazy" decoding="async" alt="评价内容示例">
+        <img class="content-type-card content-type-note" data-src="assets/content-types/note.webp" loading="lazy" decoding="async" alt="笔记内容示例">
         <p class="why-credit">大众点评「个人清单」概念提案</p>
       </div>
     </section>
@@ -1466,19 +1473,19 @@
           <span class="avatar-pulse avatar-pulse-1"></span>
           <span class="avatar-pulse avatar-pulse-2"></span>
           <span class="people-avatar"></span>
-          <img class="people-card people-card-warm" src="assets/around-person/warm-moments.png" alt="">
-          <img class="people-card people-card-pairing" src="assets/around-person/food-pairing.png" alt="">
-          <img class="people-card people-card-reason" src="assets/around-person/revisit-reason.png" alt="">
-          <img class="people-card people-card-recipe" src="assets/around-person/secret-recipe.png" alt="">
+          <img class="people-card people-card-warm" data-src="assets/around-person/warm-moments.webp" loading="lazy" decoding="async" alt="">
+          <img class="people-card people-card-pairing" data-src="assets/around-person/food-pairing.webp" loading="lazy" decoding="async" alt="">
+          <img class="people-card people-card-reason" data-src="assets/around-person/revisit-reason.webp" loading="lazy" decoding="async" alt="">
+          <img class="people-card people-card-recipe" data-src="assets/around-person/secret-recipe.webp" loading="lazy" decoding="async" alt="">
         </div>
       </div>
     </section>
     <section class="screen" aria-label="画面 4">
       <div class="stage">
         <h1 class="albums-heading">翻开特辑，走进一个人的生活</h1>
-        <button class="album-card album-card-1" type="button" aria-label="查看大学路生活特辑详情" data-detail="assets/album-detail/detail-2.png" data-header="assets/album-detail/detail-2-scrolled.png" data-cut="2.7761%" data-end-space="36px" data-detail-alt="大学路生活特辑详情"><img src="assets/albums/album-1.png" alt="大学毕业前，和室友吃完的大学路"></button>
-        <button class="album-card album-card-2" type="button" aria-label="查看上海老街生活特辑详情" data-detail="assets/album-detail/detail-page.png" data-header="assets/album-detail/sticky-header.png" data-cut="3.2617%" data-detail-alt="上海老街生活特辑详情"><img src="assets/albums/album-2.png" alt="在上海的老街边，还有一些慢下来的手艺"></button>
-        <button class="album-card album-card-3" type="button" aria-label="查看四川旅行生活特辑详情" data-detail="assets/album-detail/detail-3.png" data-header="assets/album-detail/detail-3-scrolled.png" data-cut="2.7761%" data-end-space="36px" data-detail-alt="四川旅行生活特辑详情"><img src="assets/albums/album-3.png" alt="不赶景点的四川旅行"></button>
+        <button class="album-card album-card-1" type="button" aria-label="查看大学路生活特辑详情" data-detail="assets/album-detail/detail-2.webp" data-header="assets/album-detail/detail-2-scrolled.webp" data-cut="2.7761%" data-end-space="36px" data-detail-alt="大学路生活特辑详情"><img data-src="assets/albums/album-1.webp" loading="lazy" decoding="async" alt="大学毕业前，和室友吃完的大学路"></button>
+        <button class="album-card album-card-2" type="button" aria-label="查看上海老街生活特辑详情" data-detail="assets/album-detail/detail-page.webp" data-header="assets/album-detail/sticky-header.webp" data-cut="3.2617%" data-detail-alt="上海老街生活特辑详情"><img data-src="assets/albums/album-2.webp" loading="lazy" decoding="async" alt="在上海的老街边，还有一些慢下来的手艺"></button>
+        <button class="album-card album-card-3" type="button" aria-label="查看四川旅行生活特辑详情" data-detail="assets/album-detail/detail-3.webp" data-header="assets/album-detail/detail-3-scrolled.webp" data-cut="2.7761%" data-end-space="36px" data-detail-alt="四川旅行生活特辑详情"><img data-src="assets/albums/album-3.webp" loading="lazy" decoding="async" alt="不赶景点的四川旅行"></button>
         <p class="albums-hint">可点击查看特辑详情</p>
         <p class="albums-credit">大众点评「个人清单」概念提案</p>
       </div>
@@ -1495,12 +1502,12 @@
           <span class="together-wave together-wave-3"></span>
           <span class="together-wave together-wave-4"></span>
           <span class="together-wave together-wave-5"></span>
-          <img class="together-card" src="assets/together/together-card.png" alt="">
-          <div class="together-comment together-comment-1"><img src="assets/together/avatar-1.png" alt=""><span>老板真的很有人情味</span></div>
-          <div class="together-comment together-comment-2"><img src="assets/together/avatar-2.png" alt=""><span>瞬间想回学校附近走走</span></div>
-          <div class="together-comment together-comment-3"><img src="assets/together/avatar-3.png" alt=""><span>原来很多地方已经变成回忆了</span></div>
-          <div class="together-comment together-comment-4"><img src="assets/together/avatar-4.png" alt=""><span>环境看起来不错，适合毕业前和室友拍照</span></div>
-          <div class="together-comment together-comment-5"><img src="assets/together/avatar-5.png" alt=""><span>决定了，这个周末就去</span></div>
+          <img class="together-card" data-src="assets/together/together-card.webp" loading="lazy" decoding="async" alt="">
+          <div class="together-comment together-comment-1"><img data-src="assets/together/avatar-1.webp" loading="lazy" decoding="async" alt=""><span>老板真的很有人情味</span></div>
+          <div class="together-comment together-comment-2"><img data-src="assets/together/avatar-2.webp" loading="lazy" decoding="async" alt=""><span>瞬间想回学校附近走走</span></div>
+          <div class="together-comment together-comment-3"><img data-src="assets/together/avatar-3.webp" loading="lazy" decoding="async" alt=""><span>原来很多地方已经变成回忆了</span></div>
+          <div class="together-comment together-comment-4"><img data-src="assets/together/avatar-4.webp" loading="lazy" decoding="async" alt=""><span>环境看起来不错，适合毕业前和室友拍照</span></div>
+          <div class="together-comment together-comment-5"><img data-src="assets/together/avatar-5.webp" loading="lazy" decoding="async" alt=""><span>决定了，这个周末就去</span></div>
         </div>
       </div>
     </section>
@@ -1508,9 +1515,9 @@
       <div class="stage">
         <h1 class="creation-heading">创建你的生活特辑</h1>
         <p class="creation-subtitle">把你的“特别之处”，装订成册</p>
-        <img class="creation-phone creation-phone-2" src="assets/creation-screens/create-2.png" alt="选择想要收录的地点">
-        <img class="creation-phone creation-phone-4" src="assets/creation-screens/create-4-v2.png" alt="编辑生活特辑标题">
-        <img class="creation-phone creation-phone-5" src="assets/creation-screens/create-5-v3.png" alt="创建完成后的生活特辑">
+        <img class="creation-phone creation-phone-2" data-src="assets/creation-screens/create-2.webp" loading="lazy" decoding="async" alt="选择想要收录的地点">
+        <img class="creation-phone creation-phone-4" data-src="assets/creation-screens/create-4-v2.webp" loading="lazy" decoding="async" alt="编辑生活特辑标题">
+        <img class="creation-phone creation-phone-5" data-src="assets/creation-screens/create-5-v3.webp" loading="lazy" decoding="async" alt="创建完成后的生活特辑">
         <p class="creation-credit">大众点评「个人清单」概念提案</p>
       </div>
     </section>
@@ -1520,7 +1527,7 @@
           <h1 class="narrative-title">更好的表达自己</h1>
           <p class="narrative-subtitle">你的特辑里，藏着你走过的路，和你在乎的东西，翻完就懂了</p>
         </div>
-        <img class="profile-page" src="assets/profile/profile-page.png" alt="奥利嘎嘎的个人主页">
+        <img class="profile-page" data-src="assets/profile/profile-page.webp" loading="lazy" decoding="async" alt="奥利嘎嘎的个人主页">
       </div>
     </section>
     <section class="screen" aria-label="画面 8">
@@ -1530,10 +1537,10 @@
           <p class="decision-subtitle">不是让每个人都成为博主，而是让每一次真实去过，都能帮下一个相似的人少纠结一点</p>
         </div>
         <div class="decision-visual" aria-hidden="true">
-          <img class="decision-phone decision-phone-home" src="assets/decision-tools/home.png" alt="">
-          <img class="decision-phone decision-phone-search" src="assets/decision-tools/search.png" alt="">
-          <img class="decision-card decision-card-home" src="assets/decision-tools/home-feed-card.png" alt="">
-          <img class="decision-card decision-card-search" src="assets/decision-tools/search-card.png" alt="">
+          <img class="decision-phone decision-phone-home" data-src="assets/decision-tools/home.webp" loading="lazy" decoding="async" alt="">
+          <img class="decision-phone decision-phone-search" data-src="assets/decision-tools/search.webp" loading="lazy" decoding="async" alt="">
+          <img class="decision-card decision-card-home" data-src="assets/decision-tools/home-feed-card.webp" loading="lazy" decoding="async" alt="">
+          <img class="decision-card decision-card-search" data-src="assets/decision-tools/search-card.webp" loading="lazy" decoding="async" alt="">
         </div>
       </div>
     </section>
@@ -1551,11 +1558,11 @@
     <button class="album-detail-close" type="button">返回</button>
     <div class="album-detail-shell">
       <div class="album-detail-scroller" tabindex="0">
-        <img class="album-detail-page" src="assets/album-detail/detail-page.png" alt="上海老街生活特辑详情">
+        <img class="album-detail-page" decoding="async" alt="上海老街生活特辑详情">
         <div class="album-detail-scroll-end" aria-hidden="true"></div>
       </div>
-      <div class="album-detail-header"><img src="assets/album-detail/sticky-header.png" alt=""></div>
-      <img class="album-detail-toolbar" src="assets/album-detail/bottom-toolbar.png" alt="收藏与评论工具栏">
+      <div class="album-detail-header"><img decoding="async" alt=""></div>
+      <img class="album-detail-toolbar" data-src="assets/album-detail/bottom-toolbar.webp" loading="lazy" decoding="async" alt="收藏与评论工具栏">
     </div>
     <p class="album-detail-guide">可滑动查看</p>
   </div>
@@ -1619,10 +1626,20 @@
       });
     }
 
+    function hydrateImages(root) {
+      root.querySelectorAll("img[data-src]").forEach((image) => {
+        if (image.src) return;
+        image.src = image.dataset.src;
+        image.removeAttribute("data-src");
+      });
+    }
+
     function goTo(index) {
       const next = Math.max(0, Math.min(screens.length - 1, index));
       if (next === activeIndex) return;
 
+      hydrateImages(screens[next]);
+      if (screens[next + 1]) hydrateImages(screens[next + 1]);
       screens[activeIndex].classList.remove("is-active");
       activeIndex = next;
       screens[activeIndex].classList.add("is-active");
@@ -1642,6 +1659,7 @@
 
     function openAlbumDetail(trigger) {
       activeAlbumTrigger = trigger;
+      hydrateImages(albumDetailModal);
       albumDetailPage.src = trigger.dataset.detail;
       albumDetailPage.alt = trigger.dataset.detailAlt;
       albumDetailPage.style.setProperty("--detail-toolbar-cut", trigger.dataset.cut);
@@ -1697,6 +1715,8 @@
     }, { passive: true });
 
     window.addEventListener("resize", updateBackground);
+    hydrateImages(screens[0]);
+    if (screens[1]) hydrateImages(screens[1]);
     updateBackground();
 
     window.addEventListener("keydown", (event) => {
