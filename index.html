@@ -1,0 +1,1733 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>生活特辑</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    html {
+      background: #f5f3f0;
+    }
+
+    body {
+      background: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --tab-bg: #ffffff;
+      --tab-active: #000000;
+      --tab-muted: #8e8e8e;
+      --credit-color: rgba(0, 0, 0, 0.4);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: var(--page-bg, #f5f3f0);
+      transition: background 180ms linear;
+      pointer-events: none;
+    }
+
+    body[data-theme="dark"] {
+      --tab-bg: #413b39;
+      --tab-active: #f5f3f0;
+      --tab-muted: #9b9693;
+      --credit-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .deck {
+      position: relative;
+      z-index: 1;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: transparent;
+      touch-action: none;
+    }
+
+    .screen {
+      position: absolute;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      display: grid;
+      place-items: center;
+      background: transparent;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 520ms ease, visibility 0s linear 520ms;
+    }
+
+    .screen.is-active {
+      z-index: 1;
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition: opacity 520ms ease, visibility 0s;
+    }
+
+    .stage {
+      position: relative;
+      width: min(100vw, calc(100vh * 16 / 9));
+      height: min(100vh, calc(100vw * 9 / 16));
+    }
+
+    .stage img {
+      display: block;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .screen-art {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      clip-path: inset(6px);
+    }
+
+    .opening-copy {
+      position: absolute;
+      top: 15.5%;
+      left: 29%;
+      z-index: 6;
+      width: 42%;
+      margin: 0;
+      color: #000000;
+      font-family: "Songti SC", STSong, SimSun, serif;
+      font-size: min(3.6458vw, 6.4815vh);
+      font-weight: 600;
+      line-height: 1.42;
+      letter-spacing: 0;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .opening-paper {
+      position: absolute;
+      height: auto;
+      transform-origin: center center;
+      opacity: 0;
+    }
+
+    .screen.is-active .opening-paper {
+      animation-name: paperSpread, gentleFloat;
+      animation-duration: 1280ms, 5.2s;
+      animation-timing-function: cubic-bezier(0.22, 0.9, 0.18, 1), ease-in-out;
+      animation-delay: var(--appear-delay), calc(var(--appear-delay) + 1450ms);
+      animation-fill-mode: forwards, both;
+      animation-iteration-count: 1, infinite;
+    }
+
+    .screen.is-active .opening-copy {
+      animation: titleReveal 520ms ease-out 1350ms forwards;
+    }
+
+    .definition-copy {
+      position: absolute;
+      left: 9.6875%;
+      top: 14.9074%;
+      width: 47%;
+      color: #111111;
+    }
+
+    .definition-label {
+      display: inline-flex;
+      align-items: center;
+      height: min(4.6296vh, 2.6042vw);
+      padding: 0 min(1.0417vw, 1.8519vh);
+      border-radius: min(0.8333vw, 1.4815vh);
+      background: #ffffff;
+      color: rgba(0, 0, 0, 0.5);
+      font-size: min(1.3021vw, 2.3148vh);
+    }
+
+    .definition-title {
+      margin: min(2.2222vh, 1.25vw) 0 0;
+      font-family: "Songti SC", STSong, SimSun, serif;
+      font-size: min(3.6458vw, 6.4815vh);
+      font-weight: 600;
+      line-height: 1.22;
+    }
+
+    .definition-subtitle {
+      margin: min(1.8519vh, 1.0417vw) 0 0;
+      font-family: "Songti SC", STSong, SimSun, serif;
+      font-size: min(2.0833vw, 3.7037vh);
+      font-weight: 600;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+
+    .definition-body {
+      margin: min(6.4815vh, 3.6458vw) 0 0;
+      font-size: min(1.4583vw, 2.5926vh);
+      line-height: 1.72;
+    }
+
+    .definition-statement {
+      margin: min(7.4074vh, 4.1667vw) 0 0;
+      font-family: "Songti SC", STSong, SimSun, serif;
+      font-size: min(2.0833vw, 3.7037vh);
+      font-weight: 600;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+
+    .narrative-copy {
+      position: absolute;
+      top: 17.5926%;
+      left: 5%;
+      width: 90%;
+      color: #ffffff;
+      text-align: center;
+    }
+
+    .narrative-title {
+      margin: 0;
+      font-family: "Songti SC", STSong, SimSun, serif;
+      font-size: min(3.6458vw, 6.4815vh);
+      font-weight: 600;
+      line-height: 1.2286;
+      letter-spacing: 0.04em;
+    }
+
+    .narrative-copy-wide .narrative-title {
+      font-size: min(3.125vw, 5.5556vh);
+    }
+
+    .decision-copy {
+      position: absolute;
+      top: 35.0926%;
+      left: 6.4583%;
+      width: 40.7292%;
+      color: #ffffff;
+    }
+
+    .decision-title {
+      margin: 0;
+      font-family: "Songti SC", STSong, SimSun, serif;
+      width: 100%;
+      font-size: min(3.3333vw, 5.9259vh);
+      font-weight: 800;
+      line-height: 1.375;
+      letter-spacing: 0.04em;
+      white-space: normal;
+    }
+
+    .decision-subtitle {
+      width: 84.7826%;
+      margin: min(4.4444vh, 2.5vw) 0 0;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: min(1.4583vw, 2.5926vh);
+      line-height: 1.7143;
+    }
+
+    .decision-visual {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .decision-phone {
+      position: absolute;
+      top: 15.0926%;
+      z-index: 1;
+      width: 20.3646%;
+      height: auto;
+      border-radius: min(1.0417vw, 1.8519vh);
+      opacity: 0;
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.18);
+    }
+
+    .decision-phone-home {
+      left: 50.4167%;
+      --device-delay: 120ms;
+    }
+
+    .decision-phone-search {
+      left: 74.6354%;
+      --device-delay: 320ms;
+    }
+
+    .screen.is-active .decision-phone {
+      animation: deviceIn 720ms cubic-bezier(0.2, 0.82, 0.25, 1) var(--device-delay) forwards;
+    }
+
+    .decision-card {
+      position: absolute;
+      z-index: 3;
+      height: auto;
+      opacity: 0;
+      filter: drop-shadow(0 12px 26px rgba(0, 0, 0, 0.18));
+    }
+
+    .decision-card-home {
+      top: 23.3796%;
+      left: 60.7552%;
+      width: 11.8229%;
+      --card-delay: 780ms;
+    }
+
+    .decision-card-search {
+      top: 64.7407%;
+      left: 72.6042%;
+      width: 24.375%;
+      --card-delay: 1120ms;
+    }
+
+    .screen.is-active .decision-card {
+      animation-name: decisionCardIn, gentleFloat;
+      animation-duration: 680ms, 5s;
+      animation-timing-function: cubic-bezier(0.2, 0.85, 0.25, 1), ease-in-out;
+      animation-delay: var(--card-delay), calc(var(--card-delay) + 850ms);
+      animation-fill-mode: forwards, both;
+      animation-iteration-count: 1, infinite;
+    }
+
+    @keyframes deviceIn {
+      from {
+        opacity: 0;
+        transform: translateY(22px) scale(0.98);
+      }
+      to {
+        opacity: 0.8;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes decisionCardIn {
+      from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .narrative-subtitle {
+      margin: min(2.3148vh, 1.3021vw) 0 0;
+      color: rgba(255, 255, 255, 0.65);
+      font-size: min(1.4583vw, 2.5926vh);
+      line-height: 1.5;
+    }
+
+    .profile-copy {
+      top: 14.8148%;
+    }
+
+    .profile-copy .narrative-subtitle {
+      margin-top: min(1.8519vh, 1.0417vw);
+    }
+
+    .profile-page {
+      position: absolute;
+      top: 31.8519%;
+      left: 39.8958%;
+      width: 20.3125%;
+      height: auto;
+      border-radius: min(1.5625vw, 2.7778vh);
+      opacity: 0;
+      box-shadow: 0 20px 54px rgba(0, 0, 0, 0.2);
+    }
+
+    .screen.is-active .profile-page {
+      animation-name: profilePageIn, gentleFloat;
+      animation-duration: 720ms, 5.2s;
+      animation-timing-function: cubic-bezier(0.2, 0.82, 0.25, 1), ease-in-out;
+      animation-delay: 180ms, 1050ms;
+      animation-fill-mode: forwards, both;
+      animation-iteration-count: 1, infinite;
+    }
+
+    @keyframes profilePageIn {
+      from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .together-visual {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .together-card {
+      position: absolute;
+      top: 35.1407%;
+      left: 50%;
+      z-index: 3;
+      width: 15.4276%;
+      height: auto;
+      transform: translateX(-50%);
+      filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.14));
+    }
+
+    .together-wave {
+      position: absolute;
+      top: 57.1759%;
+      left: 49.7656%;
+      z-index: 1;
+      width: 16.8229%;
+      aspect-ratio: 1;
+      border: min(0.1042vw, 0.1852vh) solid rgba(255, 255, 255, 0.34);
+      border-radius: 50%;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.92);
+      animation: togetherWave 4s ease-out infinite;
+    }
+
+    .together-wave-2 { animation-delay: 0.8s; }
+    .together-wave-3 { animation-delay: 1.6s; }
+    .together-wave-4 { animation-delay: 2.4s; }
+    .together-wave-5 { animation-delay: 3.2s; }
+
+    .together-comment {
+      position: absolute;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      min-height: min(6.2963vh, 3.5417vw);
+      padding: min(0.2778vh, 0.1563vw) min(0.7813vw, 1.3889vh);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: min(1.7708vw, 3.1481vh);
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+      backdrop-filter: blur(10px);
+      color: #333333;
+      opacity: 0;
+    }
+
+    .screen.is-active .together-comment {
+      animation: commentBubble 8s cubic-bezier(0.2, 0.82, 0.25, 1) infinite;
+    }
+
+    .together-comment img {
+      flex: 0 0 auto;
+      width: min(3.1771vw, 5.6481vh);
+      height: min(3.2292vw, 5.7407vh);
+      margin-right: min(0.625vw, 1.1111vh);
+      border-radius: 50%;
+    }
+
+    .together-comment span {
+      font-size: min(1.25vw, 2.2222vh);
+      line-height: 1.4167;
+    }
+
+    .together-comment:not(.together-comment-4) span {
+      white-space: nowrap;
+    }
+
+    .together-comment-1 {
+      top: 43.3333%;
+      left: 26.3021%;
+      width: 16.5625%;
+      animation-delay: 0.25s !important;
+    }
+
+    .together-comment-2 {
+      top: 47.5%;
+      left: 64.7396%;
+      width: 17.7083%;
+      animation-delay: 1.45s !important;
+    }
+
+    .together-comment-3 {
+      top: 58.5185%;
+      left: 12.5%;
+      width: 21.1458%;
+      animation-delay: 2.65s !important;
+    }
+
+    .together-comment-4 {
+      top: 66.7593%;
+      left: 59.8958%;
+      width: 29%;
+      min-height: min(9.537vh, 5.3646vw);
+      border-radius: min(1.25vw, 2.2222vh);
+      animation-delay: 3.85s !important;
+    }
+
+    .together-comment-5 {
+      top: 78.7963%;
+      left: 28.0729%;
+      width: 17.7604%;
+      animation-delay: 5.05s !important;
+    }
+
+    @keyframes togetherWave {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.92);
+      }
+
+      12% {
+        opacity: 0.42;
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(2.58);
+      }
+    }
+
+    @keyframes commentBubble {
+      0%, 8% {
+        opacity: 0;
+        transform: translateY(16px) scale(0.94);
+      }
+
+      15%, 55% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      68%, 100% {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.98);
+      }
+    }
+
+    .ending-copy {
+      position: absolute;
+      top: 29.1667%;
+      left: 10%;
+      width: 80%;
+      color: #111111;
+      text-align: center;
+    }
+
+    .ending-title,
+    .ending-subtitle {
+      margin: 0;
+      font-family: "Songti SC", STSong, SimSun, serif;
+      font-weight: 600;
+    }
+
+    .ending-title {
+      font-size: min(3.3333vw, 5.9259vh);
+      line-height: 1.25;
+    }
+
+    .ending-subtitle {
+      margin-top: min(2.7778vh, 1.5625vw);
+      font-size: min(2.6042vw, 4.6296vh);
+      line-height: 1.3;
+    }
+
+    .ending-body {
+      margin: min(5.5556vh, 3.125vw) 0 0;
+      font-size: min(1.4583vw, 2.5926vh);
+      line-height: 1.72;
+    }
+
+    .paper-left-top {
+      --appear-delay: 80ms;
+      --stack-left: 37.5208%;
+      --stack-top: 38.517%;
+      --stack-rotate: -1.5deg;
+      --final-rotate: -8.56deg;
+      left: 4.4792%;
+      top: 19.7222%;
+      width: 24.9583%;
+      z-index: 2;
+    }
+
+    .paper-left-bottom {
+      --appear-delay: 150ms;
+      --stack-left: 36.7409%;
+      --stack-top: 37.5421%;
+      --stack-rotate: 1.5deg;
+      --final-rotate: 10.29deg;
+      left: -1.6146%;
+      top: 50%;
+      width: 26.5182%;
+      z-index: 3;
+    }
+
+    .paper-center {
+      --appear-delay: 0ms;
+      --stack-left: 31.9792%;
+      --stack-top: 32.5926%;
+      --stack-rotate: 0deg;
+      --final-rotate: 2.72deg;
+      left: 31.4115%;
+      top: 36.1111%;
+      width: 36.0417%;
+      z-index: 5;
+    }
+
+    .paper-right-top {
+      --appear-delay: 110ms;
+      --stack-left: 38.0669%;
+      --stack-top: 39.1717%;
+      --stack-rotate: 1deg;
+      --final-rotate: 5.92deg;
+      left: 70.7292%;
+      top: 17.037%;
+      width: 23.8661%;
+      z-index: 1;
+    }
+
+    .paper-right-bottom {
+      --appear-delay: 190ms;
+      --stack-left: 35.9609%;
+      --stack-top: 36.6087%;
+      --stack-rotate: -1deg;
+      --final-rotate: -10.39deg;
+      left: 67.2724%;
+      top: 49.8778%;
+      width: 28.0781%;
+      z-index: 4;
+    }
+
+    @keyframes paperSpread {
+      0% {
+        left: var(--stack-left);
+        top: var(--stack-top);
+        opacity: 0;
+        transform: rotate(var(--stack-rotate)) scale(0.86);
+      }
+
+      12% {
+        opacity: 1;
+      }
+
+      72% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 1;
+        transform: rotate(var(--final-rotate)) scale(1);
+      }
+    }
+
+    @keyframes titleReveal {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .creation-heading {
+      position: absolute;
+      left: 8.125%;
+      top: 40.6481%;
+      width: 35%;
+      margin: 0;
+      color: #ffffff;
+      font-family: "Songti SC", STSong, SimSun, serif;
+      font-size: min(3.3333vw, 5.9259vh);
+      font-style: normal;
+      font-weight: 600;
+      line-height: 1.2286;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .creation-subtitle {
+      position: absolute;
+      left: 8.125%;
+      top: 52.5%;
+      margin: 0;
+      color: rgba(255, 255, 255, 0.68);
+      font-size: min(1.4583vw, 2.5926vh);
+      line-height: 1.7143;
+      white-space: nowrap;
+    }
+
+    .creation-phone {
+      position: absolute;
+      height: auto;
+      opacity: 0;
+      transform: rotate(var(--phone-rotate, 0deg));
+      transform-origin: center;
+      filter: drop-shadow(0 0 min(1.875vw, 3.333vh) rgba(0, 0, 0, 0.1));
+    }
+
+    .screen.is-active .creation-phone {
+      animation-name: creationPhoneIn, gentleFloat;
+      animation-duration: 760ms, 5.2s;
+      animation-timing-function: cubic-bezier(0.2, 0.84, 0.25, 1), ease-in-out;
+      animation-delay: var(--phone-delay), calc(var(--phone-delay) + 950ms);
+      animation-fill-mode: forwards, both;
+      animation-iteration-count: 1, infinite;
+    }
+
+    .creation-phone-2 {
+      left: 56.5104%;
+      top: 14.8759%;
+      width: 19.7438%;
+      --phone-delay: 280ms;
+      --phone-opacity: 1;
+      --phone-rotate: 0deg;
+      z-index: 3;
+    }
+
+    .creation-phone-4 {
+      left: 44.1333%;
+      top: 19.137%;
+      width: 17.3672%;
+      --phone-delay: 80ms;
+      --phone-opacity: 0.9;
+      --phone-rotate: -8.33deg;
+      z-index: 2;
+    }
+
+    .creation-phone-5 {
+      left: 71.3479%;
+      top: 19.012%;
+      width: 17.3672%;
+      --phone-delay: 480ms;
+      --phone-opacity: 0.9;
+      --phone-rotate: 9.01deg;
+      z-index: 2;
+    }
+
+    @keyframes creationPhoneIn {
+      from {
+        opacity: 0;
+        transform: translateY(34px) rotate(var(--phone-rotate)) scale(0.94);
+      }
+      to {
+        opacity: var(--phone-opacity);
+        transform: translateY(0) rotate(var(--phone-rotate)) scale(1);
+      }
+    }
+
+    .creation-credit {
+      position: absolute;
+      bottom: 3.8889%;
+      left: 0;
+      width: 100%;
+      margin: 0;
+      color: rgba(245, 243, 240, 0.48);
+      font-size: min(1.25vw, 2.2222vh);
+      line-height: 1;
+      text-align: center;
+    }
+
+    .people-orbit {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .people-ring {
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .people-ring-outer {
+      left: 59.5833%;
+      top: 23.5185%;
+      width: 32.3958%;
+      aspect-ratio: 1;
+      background: radial-gradient(circle at center, rgba(245, 243, 240, 0.3) 0%, rgba(234, 225, 213, 0.3) 100%);
+    }
+
+    .people-ring-middle {
+      left: 65.2083%;
+      top: 33.5185%;
+      width: 21.1458%;
+      aspect-ratio: 1;
+      background: radial-gradient(circle at center, rgba(245, 243, 240, 0.6) 0%, rgba(234, 225, 213, 0.6) 100%);
+    }
+
+    .people-ring-inner {
+      left: 70.1042%;
+      top: 42.2222%;
+      width: 11.3542%;
+      aspect-ratio: 1;
+      background: radial-gradient(circle at center, #f5f3f0 0%, #eae1d5 100%);
+    }
+
+    .people-avatar {
+      position: absolute;
+      left: 72.3438%;
+      top: 46.2037%;
+      width: 6.8667%;
+      aspect-ratio: 1;
+      overflow: hidden;
+      border: min(0.1563vw, 0.2778vh) solid #ffffff;
+      border-radius: 50%;
+      background: #b99c82;
+      box-shadow: 0 8px 24px rgba(105, 86, 67, 0.12);
+    }
+
+    .avatar-pulse {
+      position: absolute;
+      left: 72.3438%;
+      top: 46.2037%;
+      width: 6.8667%;
+      aspect-ratio: 1;
+      border: min(0.1042vw, 0.1852vh) solid rgba(185, 156, 130, 0.48);
+      border-radius: 50%;
+      opacity: 0;
+      animation: avatarPulse 2.8s ease-out infinite;
+    }
+
+    .avatar-pulse-2 {
+      animation-delay: 1.4s;
+    }
+
+    .people-avatar::before {
+      content: "";
+      position: absolute;
+      left: 35%;
+      top: 20%;
+      width: 30%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: #f5f3f0;
+    }
+
+    .people-avatar::after {
+      content: "";
+      position: absolute;
+      left: 19%;
+      bottom: -12%;
+      width: 62%;
+      height: 55%;
+      border-radius: 50% 50% 0 0;
+      background: #f5f3f0;
+    }
+
+    .people-card {
+      position: absolute;
+      height: auto;
+      opacity: 0;
+      filter: drop-shadow(2px 6px 1px rgba(0, 0, 0, 0.05));
+    }
+
+    .screen.is-active .people-card {
+      animation-name: orbitCardIn, gentleFloat;
+      animation-duration: 640ms, 4.8s;
+      animation-timing-function: cubic-bezier(0.2, 0.85, 0.25, 1), ease-in-out;
+      animation-delay: var(--appear-delay), calc(var(--appear-delay) + 800ms);
+      animation-fill-mode: forwards, both;
+      animation-iteration-count: 1, infinite;
+    }
+
+    .people-card-warm {
+      --appear-delay: 100ms;
+      left: 57.2917%;
+      top: 20.3704%;
+      width: 17.5%;
+    }
+
+    .people-card-pairing {
+      --appear-delay: 280ms;
+      left: 79.1667%;
+      top: 20.9259%;
+      width: 17.6042%;
+    }
+
+    .people-card-reason {
+      --appear-delay: 460ms;
+      left: 55.7292%;
+      top: 57.4074%;
+      width: 12.2396%;
+    }
+
+    .people-card-recipe {
+      --appear-delay: 640ms;
+      left: 76.3021%;
+      top: 63.8889%;
+      width: 18.5938%;
+    }
+
+    .albums-heading {
+      position: absolute;
+      top: 17.5926%;
+      left: 50%;
+      width: 60%;
+      margin: 0;
+      transform: translateX(-50%);
+      color: #ffffff;
+      font-family: "Songti SC", STSong, SimSun, serif;
+      font-size: min(3.6458vw, 6.4815vh);
+      font-style: normal;
+      font-weight: 600;
+      line-height: 1.2286;
+      letter-spacing: 0.04em;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .album-card {
+      position: absolute;
+      top: 39.8148%;
+      width: 35.6771%;
+      height: auto;
+      margin: 0;
+      padding: 0;
+      overflow: visible;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      appearance: none;
+    }
+
+    .album-card > img {
+      display: block;
+      width: 100%;
+      height: auto;
+      transition: filter 180ms ease;
+    }
+
+    .album-card:hover > img,
+    .album-card:focus-visible > img {
+      filter: brightness(1.04);
+    }
+
+    .album-card:focus-visible {
+      outline: 3px solid rgba(255, 213, 0, 0.9);
+      outline-offset: 6px;
+    }
+
+    .screen.is-active .album-card {
+      animation: gentleFloat 5.4s ease-in-out var(--float-delay) infinite both;
+    }
+
+    .album-card-1 {
+      left: -6.0938%;
+      --float-delay: 0ms;
+    }
+
+    .album-card-2 {
+      left: 32.1875%;
+      --float-delay: 700ms;
+    }
+
+    .album-card-3 {
+      left: 70.4688%;
+      --float-delay: 1400ms;
+    }
+
+    .albums-hint {
+      position: absolute;
+      top: 83.6111%;
+      left: 50%;
+      width: 11.25%;
+      margin: 0;
+      transform: translateX(-50%);
+      color: #ffffff;
+      font-size: min(1.25vw, 2.2222vh);
+      font-weight: 500;
+      line-height: 1.4167;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .album-detail-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: grid;
+      place-items: center;
+      background: rgba(81, 74, 71, 0.6);
+      backdrop-filter: blur(45px);
+      -webkit-backdrop-filter: blur(45px);
+      animation: modalFadeIn 240ms ease-out both;
+    }
+
+    .album-detail-modal[hidden] {
+      display: none;
+    }
+
+    .album-detail-shell {
+      position: relative;
+      width: min(390px, 86vw, calc(86vh * 0.48267));
+      height: auto;
+      aspect-ratio: 351 / 727.2;
+      overflow: hidden;
+      border-radius: 28px;
+      background: #ffffff;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.3);
+      animation: detailRiseIn 320ms cubic-bezier(0.2, 0.82, 0.25, 1) both;
+    }
+
+    .album-detail-scroller {
+      position: absolute;
+      inset: 0 0 8.354% 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .album-detail-scroller::-webkit-scrollbar {
+      display: none;
+    }
+
+    .album-detail-page {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin-bottom: -17.3077%;
+      clip-path: inset(0 0 var(--detail-toolbar-cut, 3.2617%) 0);
+    }
+
+    .album-detail-scroll-end {
+      width: 100%;
+      height: var(--detail-end-space, 0px);
+      flex: 0 0 auto;
+    }
+
+    .album-detail-header {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      z-index: 2;
+      width: 100%;
+      height: 6.745%;
+      overflow: hidden;
+      background: #ffffff;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity 180ms ease, transform 180ms ease;
+      pointer-events: none;
+    }
+
+    .album-detail-header img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .album-detail-shell.is-scrolled .album-detail-header {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .album-detail-toolbar {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 3;
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #ffffff;
+    }
+
+    .album-detail-close {
+      position: fixed;
+      top: calc(50% - min(404px, 89.087vw, 43vh));
+      left: calc(50% - min(195px, 43vw) - 116px);
+      min-width: 82px;
+      height: 44px;
+      padding: 0 20px;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      cursor: pointer;
+      font: 400 18px / 44px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .album-detail-close:hover,
+    .album-detail-close:focus-visible {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .album-detail-guide {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      margin: 0;
+      transform: translateX(-50%);
+      color: #ffffff;
+      font-size: 18px;
+      pointer-events: none;
+    }
+
+    @media (max-width: 700px) {
+      .album-detail-close {
+        top: calc(50% - min(404px, 89.087vw, 43vh));
+        left: 12px;
+        z-index: 4;
+        min-width: 64px;
+        height: 38px;
+        padding: 0 14px;
+        background: rgba(81, 74, 71, 0.68);
+        font-size: 15px;
+        line-height: 38px;
+      }
+
+      .album-detail-guide {
+        display: none;
+      }
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes detailRiseIn {
+      from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .albums-credit {
+      position: absolute;
+      top: 95%;
+      left: 50%;
+      width: 14.5833%;
+      margin: 0;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.4);
+      font-size: min(1.0417vw, 1.8519vh);
+      line-height: 1.2;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .why-heading {
+      position: absolute;
+      left: 10.7292%;
+      top: 21.2037%;
+      width: 52%;
+      margin: 0;
+      color: #000000;
+      font-family: "Songti SC", STSong, SimSun, serif;
+      font-size: min(3.125vw, 5.5556vh);
+      font-weight: 600;
+      line-height: 1.2286;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .why-label {
+      position: absolute;
+      left: 10.7292%;
+      top: 14.9074%;
+    }
+
+    .why-intro {
+      position: absolute;
+      left: 10.7292%;
+      top: 31.4815%;
+      width: 32.0833%;
+      margin: 0;
+      color: rgba(0, 0, 0, 0.8);
+      font-size: min(1.4583vw, 2.5926vh);
+      font-weight: 400;
+      line-height: 1.7143;
+    }
+
+    .why-tags {
+      position: absolute;
+      left: 10.7292%;
+      top: 44.3519%;
+      display: grid;
+      gap: min(1.2963vh, 0.7292vw);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .why-tags li {
+      width: min(22.3958vw, 39.8148vh);
+      height: min(5.7407vh, 3.2292vw);
+      padding-left: min(1.5625vw, 2.7778vh);
+      border-radius: min(0.8333vw, 1.4815vh);
+      background: #ffffff;
+      color: #827b72;
+      font-size: min(1.3021vw, 2.3148vh);
+      line-height: min(5.7407vh, 3.2292vw);
+      white-space: nowrap;
+    }
+
+    .why-tags li:last-child {
+      width: min(21.875vw, 38.8889vh);
+    }
+
+    .why-tags li:nth-child(2) {
+      width: min(38.5417vw, 68.5185vh);
+    }
+
+    .why-conclusion {
+      position: absolute;
+      left: 11.0417%;
+      top: 70.3704%;
+      width: 34.375%;
+      margin: 0;
+      color: #905538;
+      font-family: "Songti SC", STSong, SimSun, serif;
+      font-size: min(2.2917vw, 4.0741vh);
+      font-weight: 700;
+      line-height: 1.5455;
+      letter-spacing: 0;
+    }
+
+    .content-type-card {
+      position: absolute;
+      height: auto;
+      opacity: 0;
+      filter: drop-shadow(0 0 min(2.0625vw, 3.6667vh) rgba(0, 0, 0, 0.1));
+      transform-origin: center;
+    }
+
+    .screen.is-active .content-type-card {
+      animation-name: contentCardIn, gentleFloat;
+      animation-duration: 700ms, 5s;
+      animation-timing-function: cubic-bezier(0.2, 0.82, 0.25, 1), ease-in-out;
+      animation-delay: var(--appear-delay), calc(var(--appear-delay) + 850ms);
+      animation-fill-mode: forwards, both;
+      animation-iteration-count: 1, infinite;
+    }
+
+    .content-type-checkin {
+      --appear-delay: 120ms;
+      left: 65.8854%;
+      top: 21.2963%;
+      width: 20.4375%;
+      --card-rotate: 3.64deg;
+      transform: rotate(var(--card-rotate));
+      z-index: 1;
+    }
+
+    .content-type-review {
+      --appear-delay: 380ms;
+      left: 55.0521%;
+      top: 48.7037%;
+      width: 26.3292%;
+      --card-rotate: -4.96deg;
+      transform: rotate(var(--card-rotate));
+      z-index: 2;
+    }
+
+    .content-type-note {
+      --appear-delay: 640ms;
+      left: 79.6875%;
+      top: 45.3704%;
+      width: 16.6667%;
+      --card-rotate: 7deg;
+      transform: rotate(var(--card-rotate));
+      z-index: 3;
+    }
+
+    .why-credit {
+      position: absolute;
+      left: 50%;
+      top: 95%;
+      width: 14.5833%;
+      margin: 0;
+      transform: translateX(-50%);
+      color: rgba(0, 0, 0, 0.4);
+      font-size: min(1.0417vw, 1.8519vh);
+      line-height: 1.2;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .opening-copy,
+    .why-heading,
+    .definition-title,
+    .albums-heading,
+    .narrative-title,
+    .creation-heading,
+    .ending-title {
+      font-weight: 800;
+    }
+
+    .why-credit,
+    .albums-credit,
+    .creation-credit {
+      display: none;
+    }
+
+    .global-credit-bar {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 8;
+      height: 70px;
+      background: var(--page-bg, #f5f3f0);
+      color: var(--credit-color);
+      pointer-events: none;
+      transition: background 180ms linear, color 180ms linear;
+    }
+
+    .global-credit-bar p {
+      position: absolute;
+      right: 0;
+      bottom: 30px;
+      left: 0;
+      height: 24px;
+      margin: 0;
+      font-size: min(1.0417vw, 1.8519vh);
+      font-weight: 400;
+      line-height: 24px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    body[data-screen="6"] .global-credit-bar {
+      display: none;
+    }
+
+    @keyframes contentCardIn {
+      from {
+        opacity: 0;
+        transform: translateY(28px) rotate(var(--card-rotate)) scale(0.96);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) rotate(var(--card-rotate)) scale(1);
+      }
+    }
+
+    @keyframes orbitCardIn {
+      from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.92);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes avatarPulse {
+      0% {
+        opacity: 0;
+        transform: scale(0.92);
+      }
+
+      18% {
+        opacity: 0.7;
+      }
+
+      100% {
+        opacity: 0;
+        transform: scale(2.15);
+      }
+    }
+
+    @keyframes gentleFloat {
+      0%, 100% {
+        translate: 0 0;
+      }
+
+      50% {
+        translate: 0 min(-0.4167vw, -0.7407vh);
+      }
+    }
+
+    .fixed-nav-frame {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      width: min(100vw, calc(100vh * 16 / 9));
+      height: min(100vh, calc(100vw * 9 / 16));
+      transform: translateX(-50%);
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .chapter-nav {
+      position: absolute;
+      top: 0;
+      left: 33%;
+      width: 34%;
+      height: 6.1111%;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--tab-bg);
+      box-shadow: none;
+      pointer-events: auto;
+      transition: background 180ms linear;
+    }
+
+    .chapter-nav button {
+      appearance: none;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: var(--tab-muted);
+      cursor: pointer;
+      font: 500 min(1.4583vw, 2.5926vh) / 1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+      transition: color 180ms linear, font-weight 180ms linear;
+    }
+
+    .chapter-nav button.is-active {
+      color: var(--tab-active);
+      font-weight: 700;
+    }
+
+    .chapter-nav button:focus-visible {
+      outline: 2px solid rgba(80, 120, 255, 0.75);
+      outline-offset: -4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="fixed-nav-frame" aria-hidden="false">
+    <nav class="chapter-nav" aria-label="章节导航">
+      <button type="button" data-target="0" data-chapter="opening" aria-label="跳转到开场">开场</button>
+      <button type="button" data-target="1" data-chapter="heart" aria-label="跳转到初心">初心</button>
+      <button type="button" data-target="2" data-chapter="definition" aria-label="跳转到定义">定义</button>
+      <button type="button" data-target="3" data-chapter="form" aria-label="跳转到形态">形态</button>
+      <button type="button" data-target="8" data-chapter="ending" aria-label="跳转到尾声">尾声</button>
+    </nav>
+  </div>
+  <div class="global-credit-bar" aria-hidden="true">
+    <p>大众点评「个人清单」概念提案</p>
+  </div>
+  <main class="deck" aria-label="生活特辑 9 个画面">
+    <section class="screen is-active" aria-label="画面 1">
+      <div class="stage">
+        <img class="opening-paper paper-left-top" src="assets/opening-papers-svg/paper-left-top.svg" alt="">
+        <img class="opening-paper paper-left-bottom" src="assets/opening-papers-svg/paper-left-bottom.svg" alt="">
+        <img class="opening-paper paper-center" src="assets/opening-papers-svg/paper-center.svg" alt="">
+        <img class="opening-paper paper-right-top" src="assets/opening-papers-svg/paper-right-top.svg" alt="">
+        <img class="opening-paper paper-right-bottom" src="assets/opening-papers-svg/paper-right-bottom.svg" alt="">
+        <h1 class="opening-copy">有些「特别之处」<br>只有你知道</h1>
+      </div>
+    </section>
+    <section class="screen" aria-label="画面 2">
+      <div class="stage">
+        <span class="definition-label why-label">现状分析</span>
+        <h1 class="why-heading">散落的经验从未被真正组织起来</h1>
+        <p class="why-intro">生活家们的足迹、态度和分享，在点评一直存在，<br>只是散落在各个商户页和时间线里。</p>
+        <ul class="why-tags" aria-label="内容类型">
+          <li>打卡是单次的留痕“证明我来过”</li>
+          <li>评价是“表态好不好”，是一次性的表达行为，往往写完就沉</li>
+          <li>收藏是“标记意图”，越存越废</li>
+        </ul>
+        <p class="why-conclusion">内容很多，但真实的人，被淹没了<br>缺少一个以「我」为中心的出口</p>
+        <img class="content-type-card content-type-checkin" src="assets/content-types/check-in.png" alt="打卡内容示例">
+        <img class="content-type-card content-type-review" src="assets/content-types/review.png" alt="评价内容示例">
+        <img class="content-type-card content-type-note" src="assets/content-types/note.png" alt="笔记内容示例">
+        <p class="why-credit">大众点评「个人清单」概念提案</p>
+      </div>
+    </section>
+    <section class="screen" aria-label="画面 3">
+      <div class="stage">
+        <div class="definition-copy">
+          <span class="definition-label">命名/主张</span>
+          <h1 class="definition-title">生活特辑</h1>
+          <p class="definition-subtitle">一种新的内容形态，不是围绕“店”，而是围绕“人”</p>
+          <p class="definition-body">在点评不仅有店铺评分和评价<br>还有一个个具体又真实的生活家</p>
+          <p class="definition-body">生活家把自己去过、有态度、觉得值得说的地方<br>挑出来装订后分享出来。</p>
+          <p class="definition-statement">让“真实去过的人”定义“值得去的地方”</p>
+        </div>
+        <div class="people-orbit" aria-hidden="true">
+          <span class="people-ring people-ring-outer"></span>
+          <span class="people-ring people-ring-middle"></span>
+          <span class="people-ring people-ring-inner"></span>
+          <span class="avatar-pulse avatar-pulse-1"></span>
+          <span class="avatar-pulse avatar-pulse-2"></span>
+          <span class="people-avatar"></span>
+          <img class="people-card people-card-warm" src="assets/around-person/warm-moments.png" alt="">
+          <img class="people-card people-card-pairing" src="assets/around-person/food-pairing.png" alt="">
+          <img class="people-card people-card-reason" src="assets/around-person/revisit-reason.png" alt="">
+          <img class="people-card people-card-recipe" src="assets/around-person/secret-recipe.png" alt="">
+        </div>
+      </div>
+    </section>
+    <section class="screen" aria-label="画面 4">
+      <div class="stage">
+        <h1 class="albums-heading">翻开特辑，走进一个人的生活</h1>
+        <button class="album-card album-card-1" type="button" aria-label="查看大学路生活特辑详情" data-detail="assets/album-detail/detail-2.png" data-header="assets/album-detail/detail-2-scrolled.png" data-cut="2.7761%" data-end-space="36px" data-detail-alt="大学路生活特辑详情"><img src="assets/albums/album-1.png" alt="大学毕业前，和室友吃完的大学路"></button>
+        <button class="album-card album-card-2" type="button" aria-label="查看上海老街生活特辑详情" data-detail="assets/album-detail/detail-page.png" data-header="assets/album-detail/sticky-header.png" data-cut="3.2617%" data-detail-alt="上海老街生活特辑详情"><img src="assets/albums/album-2.png" alt="在上海的老街边，还有一些慢下来的手艺"></button>
+        <button class="album-card album-card-3" type="button" aria-label="查看四川旅行生活特辑详情" data-detail="assets/album-detail/detail-3.png" data-header="assets/album-detail/detail-3-scrolled.png" data-cut="2.7761%" data-end-space="36px" data-detail-alt="四川旅行生活特辑详情"><img src="assets/albums/album-3.png" alt="不赶景点的四川旅行"></button>
+        <p class="albums-hint">可点击查看特辑详情</p>
+        <p class="albums-credit">大众点评「个人清单」概念提案</p>
+      </div>
+    </section>
+    <section class="screen" aria-label="画面 5">
+      <div class="stage">
+        <div class="narrative-copy">
+          <h1 class="narrative-title">有人和你想到一块儿去了</h1>
+          <p class="narrative-subtitle">一个人把自己的生活片段，轻轻递给另一个人。如果对方也觉得不错，那你们想到一块儿去了</p>
+        </div>
+        <div class="together-visual" aria-hidden="true">
+          <span class="together-wave together-wave-1"></span>
+          <span class="together-wave together-wave-2"></span>
+          <span class="together-wave together-wave-3"></span>
+          <span class="together-wave together-wave-4"></span>
+          <span class="together-wave together-wave-5"></span>
+          <img class="together-card" src="assets/together/together-card.png" alt="">
+          <div class="together-comment together-comment-1"><img src="assets/together/avatar-1.png" alt=""><span>老板真的很有人情味</span></div>
+          <div class="together-comment together-comment-2"><img src="assets/together/avatar-2.png" alt=""><span>瞬间想回学校附近走走</span></div>
+          <div class="together-comment together-comment-3"><img src="assets/together/avatar-3.png" alt=""><span>原来很多地方已经变成回忆了</span></div>
+          <div class="together-comment together-comment-4"><img src="assets/together/avatar-4.png" alt=""><span>环境看起来不错，适合毕业前和室友拍照</span></div>
+          <div class="together-comment together-comment-5"><img src="assets/together/avatar-5.png" alt=""><span>决定了，这个周末就去</span></div>
+        </div>
+      </div>
+    </section>
+    <section class="screen" aria-label="画面 6">
+      <div class="stage">
+        <h1 class="creation-heading">创建你的生活特辑</h1>
+        <p class="creation-subtitle">把你的“特别之处”，装订成册</p>
+        <img class="creation-phone creation-phone-2" src="assets/creation-screens/create-2.png" alt="选择想要收录的地点">
+        <img class="creation-phone creation-phone-4" src="assets/creation-screens/create-4-v2.png" alt="编辑生活特辑标题">
+        <img class="creation-phone creation-phone-5" src="assets/creation-screens/create-5-v3.png" alt="创建完成后的生活特辑">
+        <p class="creation-credit">大众点评「个人清单」概念提案</p>
+      </div>
+    </section>
+    <section class="screen" aria-label="画面 7">
+      <div class="stage">
+        <div class="narrative-copy profile-copy">
+          <h1 class="narrative-title">更好的表达自己</h1>
+          <p class="narrative-subtitle">你的特辑里，藏着你走过的路，和你在乎的东西，翻完就懂了</p>
+        </div>
+        <img class="profile-page" src="assets/profile/profile-page.png" alt="奥利嘎嘎的个人主页">
+      </div>
+    </section>
+    <section class="screen" aria-label="画面 8">
+      <div class="stage">
+        <div class="decision-copy">
+          <h1 class="decision-title">不只是创作者的表达工具<br>更是消费决策工具</h1>
+          <p class="decision-subtitle">不是让每个人都成为博主，而是让每一次真实去过，都能帮下一个相似的人少纠结一点</p>
+        </div>
+        <div class="decision-visual" aria-hidden="true">
+          <img class="decision-phone decision-phone-home" src="assets/decision-tools/home.png" alt="">
+          <img class="decision-phone decision-phone-search" src="assets/decision-tools/search.png" alt="">
+          <img class="decision-card decision-card-home" src="assets/decision-tools/home-feed-card.png" alt="">
+          <img class="decision-card decision-card-search" src="assets/decision-tools/search-card.png" alt="">
+        </div>
+      </div>
+    </section>
+    <section class="screen" aria-label="画面 9">
+      <div class="stage">
+        <div class="ending-copy">
+          <h1 class="ending-title">生活特辑</h1>
+          <h2 class="ending-subtitle">把内容重新聚到一个人身上</h2>
+          <p class="ending-body">不是单点打分，而是个人偏好<br>不是孤立店铺，而是一组生活场景<br>不是平台推荐，而是相似生活方式的人在推荐<br>通过一个真实的人，更快判断这个地方适不适合我</p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div class="album-detail-modal" role="dialog" aria-modal="true" aria-label="生活特辑详情" hidden>
+    <button class="album-detail-close" type="button">返回</button>
+    <div class="album-detail-shell">
+      <div class="album-detail-scroller" tabindex="0">
+        <img class="album-detail-page" src="assets/album-detail/detail-page.png" alt="上海老街生活特辑详情">
+        <div class="album-detail-scroll-end" aria-hidden="true"></div>
+      </div>
+      <div class="album-detail-header"><img src="assets/album-detail/sticky-header.png" alt=""></div>
+      <img class="album-detail-toolbar" src="assets/album-detail/bottom-toolbar.png" alt="收藏与评论工具栏">
+    </div>
+    <p class="album-detail-guide">可滑动查看</p>
+  </div>
+  <script>
+    const deck = document.querySelector(".deck");
+    const screens = Array.from(document.querySelectorAll(".screen"));
+    const chapterButtons = document.querySelectorAll(".chapter-nav button");
+    const albumTriggers = document.querySelectorAll(".album-card");
+    const albumDetailModal = document.querySelector(".album-detail-modal");
+    const albumDetailShell = document.querySelector(".album-detail-shell");
+    const albumDetailScroller = document.querySelector(".album-detail-scroller");
+    const albumDetailClose = document.querySelector(".album-detail-close");
+    const albumDetailPage = document.querySelector(".album-detail-page");
+    const albumDetailHeaderImage = document.querySelector(".album-detail-header img");
+    const lightBg = [245, 243, 240];
+    const darkBg = [81, 74, 71];
+    const screenBackgrounds = [
+      lightBg,
+      lightBg,
+      lightBg,
+      darkBg,
+      darkBg,
+      darkBg,
+      darkBg,
+      darkBg,
+      lightBg
+    ];
+    const screenChapters = [
+      "opening",
+      "heart",
+      "definition",
+      "form",
+      "form",
+      "form",
+      "form",
+      "form",
+      "ending"
+    ];
+
+    function colorValue(rgb) {
+      return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+    }
+
+    let activeIndex = 0;
+    let transitionLocked = false;
+    let touchStartY = 0;
+    let activeAlbumTrigger = null;
+
+    function updateBackground() {
+      const activeChapter = screenChapters[activeIndex];
+      document.body.dataset.screen = String(activeIndex);
+      document.body.style.setProperty(
+        "--page-bg",
+        colorValue(screenBackgrounds[activeIndex])
+      );
+      document.body.dataset.theme = screenBackgrounds[activeIndex] === darkBg ? "dark" : "light";
+      chapterButtons.forEach((button) => {
+        const isActive = button.dataset.chapter === activeChapter;
+        button.classList.toggle("is-active", isActive);
+        button.toggleAttribute("aria-current", isActive);
+      });
+    }
+
+    function goTo(index) {
+      const next = Math.max(0, Math.min(screens.length - 1, index));
+      if (next === activeIndex) return;
+
+      screens[activeIndex].classList.remove("is-active");
+      activeIndex = next;
+      screens[activeIndex].classList.add("is-active");
+      updateBackground();
+
+      transitionLocked = true;
+      window.setTimeout(() => {
+        transitionLocked = false;
+      }, 620);
+    }
+
+    chapterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        goTo(Number(button.dataset.target));
+      });
+    });
+
+    function openAlbumDetail(trigger) {
+      activeAlbumTrigger = trigger;
+      albumDetailPage.src = trigger.dataset.detail;
+      albumDetailPage.alt = trigger.dataset.detailAlt;
+      albumDetailPage.style.setProperty("--detail-toolbar-cut", trigger.dataset.cut);
+      albumDetailScroller.style.setProperty("--detail-end-space", trigger.dataset.endSpace || "0px");
+      albumDetailHeaderImage.src = trigger.dataset.header;
+      albumDetailScroller.scrollTop = 0;
+      albumDetailShell.classList.remove("is-scrolled");
+      albumDetailModal.hidden = false;
+      albumDetailScroller.focus({ preventScroll: true });
+    }
+
+    function closeAlbumDetail() {
+      albumDetailModal.hidden = true;
+      albumDetailShell.classList.remove("is-scrolled");
+      activeAlbumTrigger?.focus({ preventScroll: true });
+      activeAlbumTrigger = null;
+    }
+
+    albumTriggers.forEach((trigger) => {
+      trigger.addEventListener("click", () => openAlbumDetail(trigger));
+    });
+
+    albumDetailClose.addEventListener("click", closeAlbumDetail);
+
+    albumDetailModal.addEventListener("click", (event) => {
+      if (event.target === albumDetailModal) closeAlbumDetail();
+    });
+
+    albumDetailScroller.addEventListener("scroll", () => {
+      albumDetailShell.classList.toggle("is-scrolled", albumDetailScroller.scrollTop > 120);
+    }, { passive: true });
+
+    deck.addEventListener("wheel", (event) => {
+      event.preventDefault();
+      if (transitionLocked || Math.abs(event.deltaY) < 8) return;
+      goTo(activeIndex + (event.deltaY > 0 ? 1 : -1));
+    }, { passive: false });
+
+    deck.addEventListener("touchstart", (event) => {
+      touchStartY = event.touches[0].clientY;
+    }, { passive: true });
+
+    deck.addEventListener("touchmove", (event) => {
+      event.preventDefault();
+    }, { passive: false });
+
+    deck.addEventListener("touchend", (event) => {
+      if (transitionLocked || !event.changedTouches.length) return;
+      const distance = touchStartY - event.changedTouches[0].clientY;
+      if (Math.abs(distance) >= 42) {
+        goTo(activeIndex + (distance > 0 ? 1 : -1));
+      }
+    }, { passive: true });
+
+    window.addEventListener("resize", updateBackground);
+    updateBackground();
+
+    window.addEventListener("keydown", (event) => {
+      if (!albumDetailModal.hidden) {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeAlbumDetail();
+        }
+        return;
+      }
+
+      if (event.key === "ArrowDown" || event.key === "PageDown" || event.key === " ") {
+        event.preventDefault();
+        goTo(activeIndex + 1);
+      }
+
+      if (event.key === "ArrowUp" || event.key === "PageUp") {
+        event.preventDefault();
+        goTo(activeIndex - 1);
+      }
+
+      if (event.key === "Home") {
+        event.preventDefault();
+        goTo(0);
+      }
+
+      if (event.key === "End") {
+        event.preventDefault();
+        goTo(screens.length - 1);
+      }
+    });
+  </script>
+</body>
+</html>
