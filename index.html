@@ -2289,12 +2289,45 @@
       });
     }
 
-    function hydrateImages(root) {
+    function hydrateImages(root, priority = "auto") {
       root.querySelectorAll("img[data-src]").forEach((image) => {
         if (image.src) return;
+        if (priority !== "auto") image.fetchPriority = priority;
         image.src = image.dataset.src;
         image.removeAttribute("data-src");
       });
+    }
+
+    function hydrateImage(image, priority = "auto") {
+      if (!image || image.src || !image.dataset.src) return;
+      if (priority !== "auto") image.fetchPriority = priority;
+      image.src = image.dataset.src;
+      image.removeAttribute("data-src");
+    }
+
+    function hydrateImagesStaggered(root, interval = 120, priority = "low") {
+      root.querySelectorAll("img[data-src]").forEach((image, index) => {
+        window.setTimeout(() => hydrateImage(image, priority), index * interval);
+      });
+    }
+
+    function hydrateScreenImages(index, priority = "auto") {
+      const screen = screens[index];
+      if (!screen) return;
+
+      if (index === 1 || index === 4) {
+        hydrateImagesStaggered(screen, 140, priority === "auto" ? "low" : priority);
+        return;
+      }
+
+      if (index === 3) {
+        screen.querySelectorAll(".album-card > img[data-src]").forEach((image, imageIndex) => {
+          window.setTimeout(() => hydrateImage(image, imageIndex === 1 ? "high" : "low"), imageIndex * 120);
+        });
+        return;
+      }
+
+      hydrateImages(screen, priority);
     }
 
     function runWhenIdle(callback, timeout = 1200) {
@@ -2327,14 +2360,16 @@
       hydrateImages(albumDetailModal);
 
       albumTriggers.forEach((trigger, index) => {
-        runWhenIdle(() => {
-          preloadAlbumImage(trigger.dataset.hero);
-          preloadAlbumImage(trigger.dataset.header);
-        }, 900 + index * 350);
+        window.setTimeout(() => {
+          runWhenIdle(() => {
+            preloadAlbumImage(trigger.dataset.hero);
+            preloadAlbumImage(trigger.dataset.header);
+          }, 1800 + index * 400);
+        }, 1200 + index * 450);
 
         window.setTimeout(() => {
-          runWhenIdle(() => preloadAlbumImage(trigger.dataset.detail), 1800);
-        }, 900 + index * 450);
+          runWhenIdle(() => preloadAlbumImage(trigger.dataset.detail), 2400);
+        }, 2600 + index * 650);
       });
     }
 
@@ -2570,14 +2605,14 @@
       const next = Math.max(0, Math.min(screens.length - 1, index));
       if (next === activeIndex) return;
 
-      hydrateImages(screens[next]);
+      hydrateScreenImages(next, "high");
       screens[activeIndex].classList.remove("is-active");
       activeIndex = next;
       screens[activeIndex].classList.add("is-active");
       updateBackground();
 
       window.setTimeout(() => {
-        if (screens[next + 1]) runWhenIdle(() => hydrateImages(screens[next + 1]));
+        if (screens[next + 1]) runWhenIdle(() => hydrateScreenImages(next + 1, "low"));
         if (next === 3) preloadAlbumDetails();
         if (next === 5) runWhenIdle(preloadCreationAssets, 1200);
       }, 650);
@@ -2597,6 +2632,9 @@
     function openAlbumDetail(trigger) {
       activeAlbumTrigger = trigger;
       hydrateImages(albumDetailModal);
+      albumDetailHeroImage.fetchPriority = "high";
+      albumDetailPage.fetchPriority = "high";
+      albumDetailHeaderImage.fetchPriority = "high";
       albumDetailHeroImage.src = trigger.dataset.hero;
       albumDetailHero.style.setProperty("--detail-hero-height", trigger.dataset.heroHeight);
       albumDetailPage.src = trigger.dataset.detail;
@@ -2686,7 +2724,7 @@
     }, { passive: true });
 
     window.addEventListener("resize", updateBackground);
-    hydrateImages(screens[0]);
+    hydrateScreenImages(0);
     updateBackground();
 
     window.requestAnimationFrame(() => {
@@ -2697,9 +2735,9 @@
 
     window.setTimeout(() => {
       if (screens[1] && activeIndex === 0) {
-        runWhenIdle(() => hydrateImages(screens[1]), 2000);
+        runWhenIdle(() => hydrateScreenImages(1, "low"), 900);
       }
-    }, 2100);
+    }, 1200);
 
     window.addEventListener("keydown", (event) => {
       if (!creationFlowModal.hidden) {
