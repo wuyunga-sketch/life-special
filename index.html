@@ -182,6 +182,7 @@
 
     .definition-body {
       margin: min(6.4815vh, 3.6458vw) 0 0;
+      color: rgba(17, 17, 17, 0.65);
       font-size: min(1.4583vw, 2.5926vh);
       line-height: 1.72;
     }
@@ -1001,8 +1002,20 @@
       display: block;
       width: 100%;
       height: auto;
-      margin-bottom: -17.3077%;
-      clip-path: inset(0 0 var(--detail-toolbar-cut, 3.2617%) 0);
+      margin-top: calc(-1 * var(--detail-body-trim, 0%));
+    }
+
+    .album-detail-hero {
+      width: 100%;
+      aspect-ratio: 780 / var(--detail-hero-height, 620);
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .album-detail-hero img {
+      display: block;
+      width: 100%;
+      height: auto;
     }
 
     .album-detail-scroll-end {
@@ -1463,8 +1476,8 @@
           <h1 class="definition-title">生活特辑</h1>
           <p class="definition-subtitle">一种新的内容形态，不是围绕“店”，而是围绕“人”</p>
           <p class="definition-body">在点评不仅有店铺评分和评价<br>还有一个个具体又真实的生活家</p>
-          <p class="definition-body">生活家把自己去过、有态度、觉得值得说的地方<br>挑出来装订后分享出来。</p>
-          <p class="definition-statement">让“真实去过的人”定义“值得去的地方”</p>
+          <p class="definition-body">生活家把自己去过、有态度、觉得值得说的地方<br>挑出来装订后分享出来</p>
+          <p class="definition-statement">把内容重新聚到一个人身上</p>
         </div>
         <div class="people-orbit" aria-hidden="true">
           <span class="people-ring people-ring-outer"></span>
@@ -1483,9 +1496,9 @@
     <section class="screen" aria-label="画面 4">
       <div class="stage">
         <h1 class="albums-heading">翻开特辑，走进一个人的生活</h1>
-        <button class="album-card album-card-1" type="button" aria-label="查看大学路生活特辑详情" data-detail="assets/album-detail/detail-2.webp" data-header="assets/album-detail/detail-2-scrolled.webp" data-cut="2.7761%" data-end-space="36px" data-detail-alt="大学路生活特辑详情"><img data-src="assets/albums/album-1.webp" loading="lazy" decoding="async" alt="大学毕业前，和室友吃完的大学路"></button>
-        <button class="album-card album-card-2" type="button" aria-label="查看上海老街生活特辑详情" data-detail="assets/album-detail/detail-page.webp" data-header="assets/album-detail/sticky-header.webp" data-cut="3.2617%" data-detail-alt="上海老街生活特辑详情"><img data-src="assets/albums/album-2.webp" loading="lazy" decoding="async" alt="在上海的老街边，还有一些慢下来的手艺"></button>
-        <button class="album-card album-card-3" type="button" aria-label="查看四川旅行生活特辑详情" data-detail="assets/album-detail/detail-3.webp" data-header="assets/album-detail/detail-3-scrolled.webp" data-cut="2.7761%" data-end-space="36px" data-detail-alt="四川旅行生活特辑详情"><img data-src="assets/albums/album-3.webp" loading="lazy" decoding="async" alt="不赶景点的四川旅行"></button>
+        <button class="album-card album-card-1" type="button" aria-label="查看大学路生活特辑详情" data-hero="assets/album-detail/detail-2-cover-v2.webp" data-hero-height="640" data-detail="assets/album-detail/detail-2-content-v2.webp" data-header="assets/album-detail/detail-2-header-v2.webp" data-body-trim="0%" data-end-space="24px" data-detail-alt="大学路生活特辑详情"><img data-src="assets/albums/album-1.webp" loading="lazy" decoding="async" alt="大学毕业前，和室友吃完的大学路"></button>
+        <button class="album-card album-card-2" type="button" aria-label="查看上海老街生活特辑详情" data-hero="assets/album-detail/detail-1-cover-v2.webp" data-hero-height="640" data-detail="assets/album-detail/detail-1-content-v2.webp" data-header="assets/album-detail/detail-1-scrolled.webp" data-body-trim="0%" data-end-space="24px" data-detail-alt="上海老街生活特辑详情"><img data-src="assets/albums/album-2.webp" loading="lazy" decoding="async" alt="在上海的老街边，还有一些慢下来的手艺"></button>
+        <button class="album-card album-card-3" type="button" aria-label="查看四川旅行生活特辑详情" data-hero="assets/album-detail/detail-3-cover-v2.webp" data-hero-height="640" data-detail="assets/album-detail/detail-3-content-v2.webp" data-header="assets/album-detail/detail-3-header-v2.webp" data-body-trim="0%" data-end-space="24px" data-detail-alt="四川旅行生活特辑详情"><img data-src="assets/albums/album-3.webp" loading="lazy" decoding="async" alt="不赶景点的四川旅行"></button>
         <p class="albums-hint">可点击查看特辑详情</p>
         <p class="albums-credit">大众点评「个人清单」概念提案</p>
       </div>
@@ -1514,7 +1527,7 @@
     <section class="screen" aria-label="画面 6">
       <div class="stage">
         <h1 class="creation-heading">创建你的生活特辑</h1>
-        <p class="creation-subtitle">把你的“特别之处”，装订成册</p>
+        <p class="creation-subtitle">把生活里美好的瞬间分享给同好的人</p>
         <img class="creation-phone creation-phone-2" data-src="assets/creation-screens/create-2.webp" loading="lazy" decoding="async" alt="选择想要收录的地点">
         <img class="creation-phone creation-phone-4" data-src="assets/creation-screens/create-4-v2.webp" loading="lazy" decoding="async" alt="编辑生活特辑标题">
         <img class="creation-phone creation-phone-5" data-src="assets/creation-screens/create-5-v3.webp" loading="lazy" decoding="async" alt="创建完成后的生活特辑">
@@ -1548,7 +1561,7 @@
       <div class="stage">
         <div class="ending-copy">
           <h1 class="ending-title">生活特辑</h1>
-          <h2 class="ending-subtitle">把内容重新聚到一个人身上</h2>
+          <h2 class="ending-subtitle">让“真实去过的人”定义“值得去的地方”</h2>
           <p class="ending-body">不是单点打分，而是个人偏好<br>不是孤立店铺，而是一组生活场景<br>不是平台推荐，而是相似生活方式的人在推荐<br>通过一个真实的人，更快判断这个地方适不适合我</p>
         </div>
       </div>
@@ -1558,6 +1571,7 @@
     <button class="album-detail-close" type="button">返回</button>
     <div class="album-detail-shell">
       <div class="album-detail-scroller" tabindex="0">
+        <div class="album-detail-hero"><img decoding="async" alt=""></div>
         <img class="album-detail-page" decoding="async" alt="上海老街生活特辑详情">
         <div class="album-detail-scroll-end" aria-hidden="true"></div>
       </div>
@@ -1576,6 +1590,8 @@
     const albumDetailScroller = document.querySelector(".album-detail-scroller");
     const albumDetailClose = document.querySelector(".album-detail-close");
     const albumDetailPage = document.querySelector(".album-detail-page");
+    const albumDetailHero = document.querySelector(".album-detail-hero");
+    const albumDetailHeroImage = document.querySelector(".album-detail-hero img");
     const albumDetailHeaderImage = document.querySelector(".album-detail-header img");
     const lightBg = [245, 243, 240];
     const darkBg = [81, 74, 71];
@@ -1610,6 +1626,8 @@
     let transitionLocked = false;
     let touchStartY = 0;
     let activeAlbumTrigger = null;
+    let albumDetailsPreloaded = false;
+    const albumPreloadImages = [];
 
     function updateBackground() {
       const activeChapter = screenChapters[activeIndex];
@@ -1634,12 +1652,34 @@
       });
     }
 
+    function preloadAlbumDetails() {
+      if (albumDetailsPreloaded) return;
+      albumDetailsPreloaded = true;
+      hydrateImages(albumDetailModal);
+
+      const urls = new Set();
+      albumTriggers.forEach((trigger) => {
+        urls.add(trigger.dataset.hero);
+        urls.add(trigger.dataset.detail);
+        urls.add(trigger.dataset.header);
+      });
+
+      urls.forEach((url) => {
+        const image = new Image();
+        image.decoding = "async";
+        image.src = url;
+        image.decode?.().catch(() => {});
+        albumPreloadImages.push(image);
+      });
+    }
+
     function goTo(index) {
       const next = Math.max(0, Math.min(screens.length - 1, index));
       if (next === activeIndex) return;
 
       hydrateImages(screens[next]);
       if (screens[next + 1]) hydrateImages(screens[next + 1]);
+      if (next === 3) preloadAlbumDetails();
       screens[activeIndex].classList.remove("is-active");
       activeIndex = next;
       screens[activeIndex].classList.add("is-active");
@@ -1660,9 +1700,11 @@
     function openAlbumDetail(trigger) {
       activeAlbumTrigger = trigger;
       hydrateImages(albumDetailModal);
+      albumDetailHeroImage.src = trigger.dataset.hero;
+      albumDetailHero.style.setProperty("--detail-hero-height", trigger.dataset.heroHeight);
       albumDetailPage.src = trigger.dataset.detail;
       albumDetailPage.alt = trigger.dataset.detailAlt;
-      albumDetailPage.style.setProperty("--detail-toolbar-cut", trigger.dataset.cut);
+      albumDetailPage.style.setProperty("--detail-body-trim", trigger.dataset.bodyTrim || "0%");
       albumDetailScroller.style.setProperty("--detail-end-space", trigger.dataset.endSpace || "0px");
       albumDetailHeaderImage.src = trigger.dataset.header;
       albumDetailScroller.scrollTop = 0;
