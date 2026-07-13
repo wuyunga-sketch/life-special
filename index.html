@@ -734,6 +734,520 @@
       outline-offset: 4px;
     }
 
+    .creation-flow-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      display: grid;
+      place-items: center;
+      background: rgba(81, 74, 71, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      animation: modalFadeIn 220ms ease-out both;
+    }
+
+    .creation-flow-modal[hidden] {
+      display: none;
+    }
+
+    .creation-flow-shell {
+      container-type: inline-size;
+      position: relative;
+      width: min(442.24px, 82vw, calc(86vh * 442.24 / 918.3));
+      aspect-ratio: 442.24 / 918.3;
+      overflow: hidden;
+      border-radius: 28px;
+      background: #f7f7f7;
+      box-shadow: 0 24px 72px rgba(0, 0, 0, 0.28);
+      animation: detailRiseIn 300ms cubic-bezier(0.2, 0.82, 0.25, 1) both;
+    }
+
+    .creation-flow-back {
+      position: absolute;
+      top: 2.1%;
+      left: 4.55%;
+      z-index: 10;
+      display: grid;
+      width: 8.15%;
+      aspect-ratio: 1;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #111111;
+      cursor: pointer;
+      font: 400 7.2cqw / 1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .creation-flow-back:hover {
+      opacity: 0.62;
+    }
+
+    .creation-flow-back:focus-visible {
+      outline: 2px solid #ff6633;
+      outline-offset: 2px;
+      border-radius: 50%;
+    }
+
+    .creation-flow-title {
+      position: absolute;
+      top: 2.684%;
+      left: 50%;
+      z-index: 3;
+      width: 50%;
+      margin: 0;
+      transform: translateX(-50%);
+      color: #000000;
+      font-size: 4.102cqw;
+      font-weight: 500;
+      line-height: 1.38;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .creation-flow-heading {
+      position: absolute;
+      top: 9.738%;
+      left: 50%;
+      z-index: 3;
+      width: 78%;
+      margin: 0;
+      transform: translateX(-50%);
+      color: #000000;
+      font-size: 5.385cqw;
+      font-weight: 500;
+      line-height: 1.39;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .creation-location-step,
+    .creation-details-step,
+    .creation-editor-step {
+      position: absolute;
+      inset: 0;
+    }
+
+    .creation-location-step[hidden],
+    .creation-details-step[hidden],
+    .creation-editor-step[hidden] {
+      display: none;
+    }
+
+    .creation-search {
+      position: absolute;
+      top: 16.105%;
+      left: 5.127%;
+      z-index: 3;
+      display: flex;
+      width: 89.746%;
+      height: 4.994%;
+      align-items: center;
+      justify-content: center;
+      gap: 2.4cqw;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #999999;
+      font-size: 3.333cqw;
+      font-weight: 500;
+    }
+
+    .creation-search-icon {
+      position: relative;
+      width: 3.4cqw;
+      aspect-ratio: 1;
+      border: 0.42cqw solid currentColor;
+      border-radius: 50%;
+    }
+
+    .creation-search-icon::after {
+      content: "";
+      position: absolute;
+      right: -1.55cqw;
+      bottom: -0.9cqw;
+      width: 1.9cqw;
+      height: 0.42cqw;
+      border-radius: 999px;
+      background: currentColor;
+      transform: rotate(48deg);
+      transform-origin: left center;
+    }
+
+    .creation-categories {
+      position: absolute;
+      top: 22.971%;
+      left: 5.127%;
+      z-index: 3;
+      display: flex;
+      width: 114%;
+      gap: 1.54cqw;
+      pointer-events: none;
+    }
+
+    .creation-categories span {
+      display: grid;
+      min-width: 18.4cqw;
+      height: 6.67cqw;
+      place-items: center;
+      padding: 0 4.1cqw;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #000000;
+      font-size: 3.333cqw;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .merchant-board {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+    }
+
+    .merchant-candidate {
+      position: absolute;
+      width: 28.52%;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: grab;
+      touch-action: none;
+      animation: merchantCardIn 340ms cubic-bezier(0.2, 0.84, 0.25, 1) both;
+    }
+
+    .merchant-candidate:active {
+      cursor: grabbing;
+    }
+
+    .merchant-candidate.is-adding {
+      pointer-events: none;
+      animation: merchantCardOut 180ms ease-in forwards;
+    }
+
+    .merchant-candidate:nth-child(1) { top: 30.462%; left: 2.948%; transform: rotate(-2deg); }
+    .merchant-candidate:nth-child(2) { top: 30.836%; left: 66.797%; transform: rotate(-2deg); }
+    .merchant-candidate:nth-child(3) { top: 40.137%; left: 34.852%; transform: rotate(2deg); }
+    .merchant-candidate:nth-child(4) { top: 53.186%; left: 7.179%; transform: rotate(-2deg); }
+    .merchant-candidate:nth-child(5) { top: 53.435%; left: 61.667%; transform: rotate(-2deg); }
+
+    .merchant-candidate > img {
+      display: block;
+      width: 100%;
+      height: auto;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .merchant-add {
+      position: absolute;
+      top: -1.8%;
+      right: -5%;
+      display: grid;
+      width: 27%;
+      aspect-ratio: 1;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      border-radius: 36%;
+      background: #ffffff;
+      color: #777777;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      font: 300 6.8cqw / 1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .merchant-add:hover,
+    .merchant-add:focus-visible {
+      color: #ff6633;
+    }
+
+    .merchant-selection-tray {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 5;
+      height: 24.55%;
+      background: #eeeeee;
+      transition: background 160ms ease, box-shadow 160ms ease;
+    }
+
+    .merchant-selection-tray.is-drag-over {
+      background: #fff0eb;
+      box-shadow: inset 0 0 0 0.68cqw #ff6633;
+    }
+
+    .merchant-tray-hint {
+      position: absolute;
+      top: 42.25%;
+      left: 50%;
+      margin: 0;
+      transform: translate(-50%, -50%);
+      color: rgba(0, 0, 0, 0.2);
+      font-size: 2.82cqw;
+      white-space: nowrap;
+    }
+
+    .merchant-selection-tray.has-items .merchant-tray-hint {
+      display: none;
+    }
+
+    .selected-merchants {
+      position: absolute;
+      top: 8.2%;
+      left: 7.95%;
+      display: flex;
+      max-width: 84%;
+      gap: 4.25cqw;
+    }
+
+    .selected-merchant {
+      position: relative;
+      width: 17.23cqw;
+      animation: selectedMerchantIn 300ms cubic-bezier(0.2, 0.84, 0.25, 1) both;
+    }
+
+    .selected-merchant img {
+      display: block;
+      width: 100%;
+      height: 22.2cqw;
+      object-fit: cover;
+      object-position: top;
+      border-radius: 2.6cqw;
+    }
+
+    .selected-merchant button {
+      position: absolute;
+      top: -1.2cqw;
+      right: -1.2cqw;
+      display: grid;
+      width: 6.8cqw;
+      aspect-ratio: 1;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.62);
+      color: #ffffff;
+      cursor: pointer;
+      font: 300 5cqw / 1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .creation-next {
+      position: absolute;
+      bottom: calc(3.62% + min(10px, 2.261cqw));
+      left: 50%;
+      width: 42.306%;
+      height: 18.947%;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: #ff6633;
+      color: #ffffff;
+      cursor: pointer;
+      font-size: 4.102cqw;
+      font-weight: 600;
+      transform: translateX(-50%);
+    }
+
+    .creation-next[hidden] {
+      display: none;
+    }
+
+    .creation-details-step {
+      z-index: 2;
+      background: #f7f7f7;
+    }
+
+    .creation-details-step::before {
+      content: "";
+      position: absolute;
+      top: 26.05%;
+      left: 11.15%;
+      z-index: 2;
+      width: 1.5%;
+      height: 5.35%;
+      background: #ebe5e2;
+      pointer-events: none;
+    }
+
+    .creation-details-step::after {
+      content: "";
+      position: absolute;
+      top: 22.07%;
+      left: 6.41%;
+      z-index: 2;
+      display: none;
+      width: 87.82%;
+      height: 20.93%;
+      background: #e9e2dd;
+      pointer-events: none;
+    }
+
+    .creation-details-step.has-content::after {
+      display: block;
+    }
+
+    .creation-details-art {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+      clip-path: inset(8% 0 0 0);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .creation-name-input {
+      position: absolute;
+      top: 26.13%;
+      left: 11.66%;
+      z-index: 3;
+      width: 72%;
+      height: 5.1%;
+      resize: none;
+      padding: 0;
+      overflow: hidden;
+      border: 0;
+      outline: 0;
+      background: #ebe5e2;
+      color: #111111;
+      caret-color: #111111;
+      font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 6.153cqw;
+      font-weight: 600;
+      line-height: 1.5;
+      letter-spacing: 0;
+    }
+
+    .creation-details-step.has-content .creation-name-input {
+      top: 24.92%;
+      left: 12.05%;
+      width: 58%;
+      height: 9.2%;
+      background: #e9e2dd;
+    }
+
+    .creation-name-input::placeholder {
+      color: rgba(17, 17, 17, 0.22);
+      opacity: 1;
+    }
+
+    .creation-description-input {
+      position: absolute;
+      top: 34.94%;
+      left: 11.66%;
+      z-index: 3;
+      width: 76%;
+      height: 7.6%;
+      resize: none;
+      padding: 0;
+      overflow: hidden;
+      border: 0;
+      outline: 0;
+      background: #ebe5e2;
+      color: #555555;
+      caret-color: #111111;
+      font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 3.59cqw;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .creation-details-step.has-content .creation-description-input {
+      top: 36.1%;
+      left: 12.05%;
+      width: 66%;
+      height: 4.2%;
+      background: #e9e2dd;
+      color: rgba(17, 17, 17, 0.6);
+    }
+
+    .creation-description-input::placeholder {
+      color: rgba(17, 17, 17, 0.24);
+      opacity: 1;
+    }
+
+    .creation-submit {
+      position: absolute;
+      top: 46.44%;
+      left: 50%;
+      z-index: 3;
+      width: 42.306%;
+      height: 4.5%;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: #ffc6a5;
+      color: #ffffff;
+      cursor: pointer;
+      font-size: 4.102cqw;
+      font-weight: 600;
+      transform: translateX(-50%);
+      transition: background 180ms ease;
+    }
+
+    .creation-submit:disabled {
+      cursor: default;
+    }
+
+    .creation-details-step.has-content .creation-submit {
+      background: #ff6633;
+    }
+
+    .creation-editor-step {
+      z-index: 4;
+      overflow: hidden;
+      background: #c2a997;
+    }
+
+    .creation-editor-art {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .creation-flow-shell.is-editing .creation-flow-title {
+      display: none;
+    }
+
+    .creation-flow-shell.is-editing .creation-flow-back {
+      top: 2.55%;
+      color: transparent;
+    }
+
+    .merchant-drag-ghost {
+      position: fixed;
+      z-index: 100;
+      width: min(126px, 28vw);
+      height: auto;
+      opacity: 0.9;
+      filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.25));
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(1.03);
+    }
+
+    @keyframes merchantCardIn {
+      from { opacity: 0; translate: 0 12px; scale: 0.94; }
+      to { opacity: 1; translate: 0 0; scale: 1; }
+    }
+
+    @keyframes merchantCardOut {
+      to { opacity: 0; translate: 0 24px; scale: 0.9; }
+    }
+
+    @keyframes selectedMerchantIn {
+      from { opacity: 0; translate: 0 12px; scale: 0.92; }
+      to { opacity: 1; translate: 0 0; scale: 1; }
+    }
+
     .creation-phone {
       position: absolute;
       height: auto;
@@ -1644,6 +2158,41 @@
     </div>
     <p class="album-detail-guide">可滑动查看</p>
   </div>
+  <div class="creation-flow-modal" role="dialog" aria-modal="true" aria-label="创建生活特辑" hidden>
+    <div class="creation-flow-shell">
+      <button class="creation-flow-back" type="button" aria-label="返回第6页">←</button>
+      <h2 class="creation-flow-title">创建生活特辑</h2>
+      <div class="creation-location-step">
+        <p class="creation-flow-heading">选几家你想要收录的地点</p>
+        <div class="creation-search" aria-hidden="true">
+          <span class="creation-search-icon"></span>
+          <span>输入地点名搜索</span>
+        </div>
+        <div class="creation-categories" aria-hidden="true">
+          <span>吃吃喝喝</span>
+          <span>早☕晚🍷</span>
+          <span>小众探索</span>
+          <span>大学路</span>
+          <span>🍞面包脑袋</span>
+        </div>
+        <div class="merchant-board" aria-label="可添加的商户"></div>
+        <div class="merchant-selection-tray" aria-label="已添加的商户">
+          <p class="merchant-tray-hint">可以把商户拖拽到这里</p>
+          <div class="selected-merchants" aria-live="polite"></div>
+          <button class="creation-next" type="button" hidden>下一步</button>
+        </div>
+      </div>
+      <div class="creation-details-step" hidden>
+        <img class="creation-details-art" data-src="assets/creation-flow/create-details.webp" decoding="async" alt="给生活特辑取名和填写简介">
+        <textarea class="creation-name-input" rows="2" inputmode="text" autocomplete="off" maxlength="24" placeholder="给特辑起个名字" aria-label="特辑名"></textarea>
+        <textarea class="creation-description-input" maxlength="80" placeholder="想对翻开这本特辑的人说写什么呢" aria-label="特辑简介"></textarea>
+        <button class="creation-submit" type="button" disabled>立即创建</button>
+      </div>
+      <div class="creation-editor-step" hidden>
+        <img class="creation-editor-art" data-src="assets/creation-flow/create-editor.webp" decoding="async" alt="生活特辑详情编辑页">
+      </div>
+    </div>
+  </div>
   <script>
     const deck = document.querySelector(".deck");
     const screens = Array.from(document.querySelectorAll(".screen"));
@@ -1657,6 +2206,20 @@
     const albumDetailHero = document.querySelector(".album-detail-hero");
     const albumDetailHeroImage = document.querySelector(".album-detail-hero img");
     const albumDetailHeaderImage = document.querySelector(".album-detail-header img");
+    const creationButton = document.querySelector(".creation-button");
+    const creationFlowModal = document.querySelector(".creation-flow-modal");
+    const creationFlowShell = document.querySelector(".creation-flow-shell");
+    const creationFlowBack = document.querySelector(".creation-flow-back");
+    const merchantBoard = document.querySelector(".merchant-board");
+    const merchantSelectionTray = document.querySelector(".merchant-selection-tray");
+    const selectedMerchants = document.querySelector(".selected-merchants");
+    const creationNext = document.querySelector(".creation-next");
+    const creationLocationStep = document.querySelector(".creation-location-step");
+    const creationDetailsStep = document.querySelector(".creation-details-step");
+    const creationNameInput = document.querySelector(".creation-name-input");
+    const creationDescriptionInput = document.querySelector(".creation-description-input");
+    const creationSubmit = document.querySelector(".creation-submit");
+    const creationEditorStep = document.querySelector(".creation-editor-step");
     const lightBg = [245, 243, 240];
     const darkBg = [81, 74, 71];
     const screenBackgrounds = [
@@ -1693,6 +2256,23 @@
     let albumDetailsPreloadScheduled = false;
     const albumPreloadImages = [];
     const albumPreloadedUrls = new Set();
+    let creationAssetsPreloaded = false;
+    let creationFlowStep = "locations";
+    let merchantAddLocked = false;
+    let touchMerchantDrag = null;
+    const selectedMerchantIds = [];
+    const candidateMerchantIds = ["amao", "aying", "sanmu", "pudong", "ama"];
+    const queuedMerchantIds = ["grass", "qiang", "charters"];
+    const merchantCatalog = {
+      amao: { name: "阿毛的深夜食堂", src: "assets/creation-flow/amao-night-food.webp" },
+      aying: { name: "阿英家拌川", src: "assets/creation-flow/aying-noodles.webp" },
+      sanmu: { name: "三木川菜", src: "assets/creation-flow/sanmu-sichuan.webp" },
+      pudong: { name: "浦东美术馆", src: "assets/creation-flow/pudong-art-museum.webp" },
+      ama: { name: "阿嬷早点", src: "assets/creation-flow/ama-breakfast.webp" },
+      grass: { name: "草根夜档·潮汕", src: "assets/creation-flow/grass-night-stall.webp" },
+      qiang: { name: "恰嘎·江西菜", src: "assets/creation-flow/qiang-jiangxi.webp" },
+      charters: { name: "夏朵餐厅", src: "assets/creation-flow/charters-restaurant.webp" }
+    };
 
     function updateBackground() {
       const activeChapter = screenChapters[activeIndex];
@@ -1758,6 +2338,234 @@
       });
     }
 
+    function preloadCreationAssets() {
+      if (creationAssetsPreloaded) return;
+      creationAssetsPreloaded = true;
+      Object.values(merchantCatalog).forEach((merchant) => {
+        const image = new Image();
+        image.decoding = "async";
+        image.fetchPriority = "low";
+        image.src = merchant.src;
+      });
+    }
+
+    function createMerchantCandidate(id) {
+      const merchant = merchantCatalog[id];
+      const card = document.createElement("div");
+      card.className = "merchant-candidate";
+      card.dataset.merchantId = id;
+
+      const image = document.createElement("img");
+      image.src = merchant.src;
+      image.alt = merchant.name;
+      image.decoding = "async";
+
+      const addButton = document.createElement("button");
+      addButton.className = "merchant-add";
+      addButton.type = "button";
+      addButton.textContent = "+";
+      addButton.setAttribute("aria-label", `添加${merchant.name}`);
+      addButton.addEventListener("pointerdown", (event) => event.stopPropagation());
+      addButton.addEventListener("click", () => addMerchant(id));
+
+      card.addEventListener("pointerdown", startTouchMerchantDrag);
+      card.append(image, addButton);
+      return card;
+    }
+
+    function renderMerchantCandidates() {
+      merchantBoard.replaceChildren(...candidateMerchantIds.map(createMerchantCandidate));
+    }
+
+    function createSelectedMerchant(id) {
+      const merchant = merchantCatalog[id];
+      const item = document.createElement("div");
+      item.className = "selected-merchant";
+      item.dataset.merchantId = id;
+
+      const image = document.createElement("img");
+      image.src = merchant.src;
+      image.alt = merchant.name;
+      image.decoding = "async";
+
+      const removeButton = document.createElement("button");
+      removeButton.type = "button";
+      removeButton.textContent = "×";
+      removeButton.setAttribute("aria-label", `移除${merchant.name}`);
+      removeButton.addEventListener("click", () => removeMerchant(id));
+      item.append(image, removeButton);
+      return item;
+    }
+
+    function updateMerchantTrayState() {
+      const hasItems = selectedMerchantIds.length > 0;
+      merchantSelectionTray.classList.toggle("has-items", hasItems);
+      creationNext.hidden = !hasItems;
+    }
+
+    function renderSelectedMerchants() {
+      selectedMerchants.replaceChildren(...selectedMerchantIds.map(createSelectedMerchant));
+      updateMerchantTrayState();
+    }
+
+    function addMerchant(id) {
+      if (merchantAddLocked || selectedMerchantIds.includes(id) || selectedMerchantIds.length >= 3) return;
+      const candidateIndex = candidateMerchantIds.indexOf(id);
+      if (candidateIndex < 0) return;
+
+      merchantAddLocked = true;
+      const candidateCard = merchantBoard.querySelector(`[data-merchant-id="${id}"]`);
+      candidateCard?.classList.add("is-adding");
+      window.setTimeout(() => {
+        selectedMerchantIds.push(id);
+        if (queuedMerchantIds.length) {
+          const replacementId = queuedMerchantIds.shift();
+          candidateMerchantIds.splice(candidateIndex, 1, replacementId);
+          candidateCard?.replaceWith(createMerchantCandidate(replacementId));
+        } else {
+          candidateMerchantIds.splice(candidateIndex, 1);
+          candidateCard?.remove();
+        }
+        selectedMerchants.append(createSelectedMerchant(id));
+        updateMerchantTrayState();
+        merchantAddLocked = false;
+      }, 180);
+    }
+
+    function removeMerchant(id) {
+      const selectedIndex = selectedMerchantIds.indexOf(id);
+      if (selectedIndex < 0) return;
+      selectedMerchantIds.splice(selectedIndex, 1);
+      queuedMerchantIds.push(id);
+      selectedMerchants.querySelector(`[data-merchant-id="${id}"]`)?.remove();
+      updateMerchantTrayState();
+    }
+
+    function startTouchMerchantDrag(event) {
+      if (event.button !== 0 || event.target.closest(".merchant-add")) return;
+      const card = event.currentTarget;
+      const id = card.dataset.merchantId;
+      const ghost = card.querySelector("img").cloneNode();
+      ghost.className = "merchant-drag-ghost";
+      document.body.append(ghost);
+      touchMerchantDrag = { id, ghost, pointerId: event.pointerId };
+      moveTouchMerchantDrag(event);
+      window.addEventListener("pointermove", moveTouchMerchantDrag, { passive: false });
+      window.addEventListener("pointerup", finishTouchMerchantDrag, { once: true });
+      window.addEventListener("pointercancel", cancelTouchMerchantDrag, { once: true });
+    }
+
+    function moveTouchMerchantDrag(event) {
+      if (!touchMerchantDrag || event.pointerId !== touchMerchantDrag.pointerId) return;
+      event.preventDefault();
+      touchMerchantDrag.ghost.style.left = `${event.clientX}px`;
+      touchMerchantDrag.ghost.style.top = `${event.clientY}px`;
+      const trayRect = merchantSelectionTray.getBoundingClientRect();
+      const overTray = event.clientX >= trayRect.left && event.clientX <= trayRect.right && event.clientY >= trayRect.top && event.clientY <= trayRect.bottom;
+      merchantSelectionTray.classList.toggle("is-drag-over", overTray);
+    }
+
+    function finishTouchMerchantDrag(event) {
+      if (!touchMerchantDrag || event.pointerId !== touchMerchantDrag.pointerId) return;
+      const trayRect = merchantSelectionTray.getBoundingClientRect();
+      const overTray = event.clientX >= trayRect.left && event.clientX <= trayRect.right && event.clientY >= trayRect.top && event.clientY <= trayRect.bottom;
+      const id = touchMerchantDrag.id;
+      cancelTouchMerchantDrag();
+      if (overTray) addMerchant(id);
+    }
+
+    function cancelTouchMerchantDrag() {
+      touchMerchantDrag?.ghost.remove();
+      touchMerchantDrag = null;
+      merchantSelectionTray.classList.remove("is-drag-over");
+      window.removeEventListener("pointermove", moveTouchMerchantDrag);
+      window.removeEventListener("pointerup", finishTouchMerchantDrag);
+      window.removeEventListener("pointercancel", cancelTouchMerchantDrag);
+    }
+
+    function openCreationFlow() {
+      preloadCreationAssets();
+      hydrateImages(creationFlowModal);
+      renderMerchantCandidates();
+      renderSelectedMerchants();
+      showCreationLocationStep();
+      creationFlowModal.hidden = false;
+      creationFlowBack.focus({ preventScroll: true });
+    }
+
+    function showCreationLocationStep() {
+      creationFlowStep = "locations";
+      creationLocationStep.hidden = false;
+      creationDetailsStep.hidden = true;
+      creationEditorStep.hidden = true;
+      creationFlowShell.classList.remove("is-editing");
+      creationFlowBack.setAttribute("aria-label", "返回第6页");
+    }
+
+    function showCreationDetailsStep() {
+      creationFlowStep = "details";
+      creationLocationStep.hidden = true;
+      creationDetailsStep.hidden = false;
+      creationEditorStep.hidden = true;
+      creationFlowShell.classList.remove("is-editing");
+      creationFlowBack.setAttribute("aria-label", "返回选择商户");
+      creationNameInput.focus({ preventScroll: true });
+      const caretPosition = creationNameInput.value.length;
+      creationNameInput.setSelectionRange(caretPosition, caretPosition);
+    }
+
+    function fillPresetCreationDetails(event) {
+      if (event?.target?.closest?.(".creation-submit")) return;
+      if (event?.type === "keydown" && ["Tab", "Shift", "Escape"].includes(event.key)) return;
+      if (event?.type === "keydown" || event?.type === "beforeinput") {
+        event.preventDefault();
+      }
+
+      if (!creationDetailsStep.classList.contains("has-content")) {
+        creationNameInput.value = "大学毕业前，和室友吃完的大学路";
+        creationDescriptionInput.value = "四年，四条胃，一家一家吃过来的。";
+        creationDetailsStep.classList.add("has-content");
+        creationSubmit.disabled = false;
+      }
+
+      window.requestAnimationFrame(() => {
+        creationNameInput.focus({ preventScroll: true });
+        const caretPosition = creationNameInput.value.length;
+        creationNameInput.setSelectionRange(caretPosition, caretPosition);
+      });
+    }
+
+    function showCreationEditorStep() {
+      if (!creationDetailsStep.classList.contains("has-content")) return;
+      creationFlowStep = "editor";
+      creationLocationStep.hidden = true;
+      creationDetailsStep.hidden = true;
+      creationEditorStep.hidden = false;
+      creationFlowShell.classList.add("is-editing");
+      creationFlowBack.setAttribute("aria-label", "返回取名和简介");
+      creationFlowBack.focus({ preventScroll: true });
+    }
+
+    function handleCreationBack() {
+      if (creationFlowStep === "editor") {
+        showCreationDetailsStep();
+        return;
+      }
+      if (creationFlowStep === "details") {
+        showCreationLocationStep();
+        creationFlowBack.focus({ preventScroll: true });
+        return;
+      }
+      closeCreationFlow();
+    }
+
+    function closeCreationFlow() {
+      cancelTouchMerchantDrag();
+      creationFlowModal.hidden = true;
+      showCreationLocationStep();
+      creationButton.focus({ preventScroll: true });
+    }
+
     function goTo(index) {
       const next = Math.max(0, Math.min(screens.length - 1, index));
       if (next === activeIndex) return;
@@ -1771,6 +2579,7 @@
       window.setTimeout(() => {
         if (screens[next + 1]) runWhenIdle(() => hydrateImages(screens[next + 1]));
         if (next === 3) preloadAlbumDetails();
+        if (next === 5) runWhenIdle(preloadCreationAssets, 1200);
       }, 650);
 
       transitionLocked = true;
@@ -1821,6 +2630,35 @@
       if (event.target === albumDetailModal) closeAlbumDetail();
     });
 
+    creationButton.addEventListener("pointerenter", preloadCreationAssets, { once: true });
+    creationButton.addEventListener("focus", preloadCreationAssets, { once: true });
+    creationButton.addEventListener("click", openCreationFlow);
+    creationFlowBack.addEventListener("click", handleCreationBack);
+    creationNext.addEventListener("click", showCreationDetailsStep);
+    creationDetailsStep.addEventListener("pointerdown", fillPresetCreationDetails);
+    creationDetailsStep.addEventListener("keydown", fillPresetCreationDetails);
+    creationDetailsStep.addEventListener("beforeinput", fillPresetCreationDetails);
+    creationSubmit.addEventListener("click", showCreationEditorStep);
+    creationFlowModal.addEventListener("click", (event) => {
+      if (event.target === creationFlowModal) closeCreationFlow();
+    });
+
+    merchantSelectionTray.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "move";
+      merchantSelectionTray.classList.add("is-drag-over");
+    });
+    merchantSelectionTray.addEventListener("dragleave", (event) => {
+      if (!merchantSelectionTray.contains(event.relatedTarget)) {
+        merchantSelectionTray.classList.remove("is-drag-over");
+      }
+    });
+    merchantSelectionTray.addEventListener("drop", (event) => {
+      event.preventDefault();
+      merchantSelectionTray.classList.remove("is-drag-over");
+      addMerchant(event.dataTransfer.getData("text/plain"));
+    });
+
     albumDetailScroller.addEventListener("scroll", () => {
       albumDetailShell.classList.toggle("is-scrolled", albumDetailScroller.scrollTop > 120);
     }, { passive: true });
@@ -1864,6 +2702,14 @@
     }, 2100);
 
     window.addEventListener("keydown", (event) => {
+      if (!creationFlowModal.hidden) {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          handleCreationBack();
+        }
+        return;
+      }
+
       if (!albumDetailModal.hidden) {
         if (event.key === "Escape") {
           event.preventDefault();
