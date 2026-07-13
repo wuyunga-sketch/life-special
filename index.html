@@ -187,6 +187,10 @@
       line-height: 1.72;
     }
 
+    .definition-body + .definition-body {
+      margin-top: min(3.3333vh, 1.875vw);
+    }
+
     .definition-statement {
       margin: min(7.4074vh, 4.1667vw) 0 0;
       font-family: "Songti SC", STSong, SimSun, serif;
@@ -1460,7 +1464,7 @@
         <p class="why-intro">生活家们的足迹、态度和分享，在点评一直存在，<br>只是散落在各个商户页和时间线里。</p>
         <ul class="why-tags" aria-label="内容类型">
           <li>打卡是单次的留痕“证明我来过”</li>
-          <li>评价是“表态好不好”，是一次性的表达行为，往往写完就沉</li>
+          <li>评价是“表态好不好”，往往写完就沉</li>
           <li>收藏是“标记意图”，越存越废</li>
         </ul>
         <p class="why-conclusion">内容很多，但真实的人，被淹没了<br>缺少一个以「我」为中心的出口</p>
@@ -1627,8 +1631,9 @@
     let transitionLocked = false;
     let touchStartY = 0;
     let activeAlbumTrigger = null;
-    let albumDetailsPreloaded = false;
+    let albumDetailsPreloadScheduled = false;
     const albumPreloadImages = [];
+    const albumPreloadedUrls = new Set();
 
     function updateBackground() {
       const activeChapter = screenChapters[activeIndex];
@@ -1653,24 +1658,44 @@
       });
     }
 
+    function runWhenIdle(callback, timeout = 1200) {
+      if ("requestIdleCallback" in window) {
+        window.requestIdleCallback(callback, { timeout });
+      } else {
+        window.setTimeout(callback, 240);
+      }
+    }
+
+    function preloadAlbumImage(url, priority = "low") {
+      if (!url || albumPreloadedUrls.has(url)) return;
+      albumPreloadedUrls.add(url);
+      const image = new Image();
+      image.decoding = "async";
+      image.fetchPriority = priority;
+      image.src = url;
+      albumPreloadImages.push(image);
+    }
+
+    function warmAlbumDetail(trigger, priority = "high") {
+      preloadAlbumImage(trigger.dataset.hero, priority);
+      preloadAlbumImage(trigger.dataset.header, priority);
+      preloadAlbumImage(trigger.dataset.detail, priority);
+    }
+
     function preloadAlbumDetails() {
-      if (albumDetailsPreloaded) return;
-      albumDetailsPreloaded = true;
+      if (albumDetailsPreloadScheduled) return;
+      albumDetailsPreloadScheduled = true;
       hydrateImages(albumDetailModal);
 
-      const urls = new Set();
-      albumTriggers.forEach((trigger) => {
-        urls.add(trigger.dataset.hero);
-        urls.add(trigger.dataset.detail);
-        urls.add(trigger.dataset.header);
-      });
+      albumTriggers.forEach((trigger, index) => {
+        runWhenIdle(() => {
+          preloadAlbumImage(trigger.dataset.hero);
+          preloadAlbumImage(trigger.dataset.header);
+        }, 900 + index * 350);
 
-      urls.forEach((url) => {
-        const image = new Image();
-        image.decoding = "async";
-        image.src = url;
-        image.decode?.().catch(() => {});
-        albumPreloadImages.push(image);
+        window.setTimeout(() => {
+          runWhenIdle(() => preloadAlbumImage(trigger.dataset.detail), 1800);
+        }, 900 + index * 450);
       });
     }
 
@@ -1679,12 +1704,15 @@
       if (next === activeIndex) return;
 
       hydrateImages(screens[next]);
-      if (screens[next + 1]) hydrateImages(screens[next + 1]);
-      if (next === 3) preloadAlbumDetails();
       screens[activeIndex].classList.remove("is-active");
       activeIndex = next;
       screens[activeIndex].classList.add("is-active");
       updateBackground();
+
+      window.setTimeout(() => {
+        if (screens[next + 1]) runWhenIdle(() => hydrateImages(screens[next + 1]));
+        if (next === 3) preloadAlbumDetails();
+      }, 650);
 
       transitionLocked = true;
       window.setTimeout(() => {
@@ -1723,6 +1751,9 @@
 
     albumTriggers.forEach((trigger) => {
       trigger.addEventListener("click", () => openAlbumDetail(trigger));
+      trigger.addEventListener("pointerenter", () => warmAlbumDetail(trigger), { once: true });
+      trigger.addEventListener("focus", () => warmAlbumDetail(trigger), { once: true });
+      trigger.addEventListener("touchstart", () => warmAlbumDetail(trigger), { once: true, passive: true });
     });
 
     albumDetailClose.addEventListener("click", closeAlbumDetail);
