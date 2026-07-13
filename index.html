@@ -1324,33 +1324,32 @@
     .people-orbit {
       position: absolute;
       inset: 0;
+      --orbit-center-x: 74.8917%;
+      --orbit-center-y: 53.0481%;
       pointer-events: none;
     }
 
     .people-ring {
       position: absolute;
+      left: var(--orbit-center-x);
+      top: var(--orbit-center-y);
       border-radius: 50%;
+      transform: translate(-50%, -50%);
     }
 
     .people-ring-outer {
-      left: 59.5833%;
-      top: 23.5185%;
       width: 32.3958%;
       aspect-ratio: 1;
       background: radial-gradient(circle at center, rgba(245, 243, 240, 0.3) 0%, rgba(234, 225, 213, 0.3) 100%);
     }
 
     .people-ring-middle {
-      left: 65.2083%;
-      top: 33.5185%;
       width: 21.1458%;
       aspect-ratio: 1;
       background: radial-gradient(circle at center, rgba(245, 243, 240, 0.6) 0%, rgba(234, 225, 213, 0.6) 100%);
     }
 
     .people-ring-inner {
-      left: 70.1042%;
-      top: 42.2222%;
       width: 11.3542%;
       aspect-ratio: 1;
       background: radial-gradient(circle at center, #f5f3f0 0%, #eae1d5 100%);
@@ -1377,11 +1376,12 @@
 
     .avatar-pulse {
       position: absolute;
-      left: 71.8016%;
-      top: 47.5546%;
+      left: var(--orbit-center-x);
+      top: var(--orbit-center-y);
       z-index: 4;
       width: 6.1802%;
       aspect-ratio: 1;
+      box-sizing: border-box;
       border: min(0.1042vw, 0.1852vh) solid rgba(185, 156, 130, 0.48);
       border-radius: 50%;
       opacity: 0;
@@ -2018,7 +2018,7 @@
     @keyframes avatarPulse {
       0% {
         opacity: 0;
-        transform: scale(0.92);
+        transform: translate(-50%, -50%) scale(0.92);
       }
 
       18% {
@@ -2027,7 +2027,7 @@
 
       100% {
         opacity: 0;
-        transform: scale(2.15);
+        transform: translate(-50%, -50%) scale(2.15);
       }
     }
 
