@@ -1485,7 +1485,13 @@
       display: block;
       width: 100%;
       height: auto;
-      transition: filter 180ms ease;
+      opacity: 0;
+      transform: translateZ(0);
+      transition: opacity 220ms ease, filter 180ms ease;
+    }
+
+    .album-card > img.is-loaded {
+      opacity: 1;
     }
 
     .album-card:hover > img,
@@ -1539,8 +1545,8 @@
       display: grid;
       place-items: center;
       background: rgba(81, 74, 71, 0.6);
-      backdrop-filter: blur(45px);
-      -webkit-backdrop-filter: blur(45px);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       animation: modalFadeIn 240ms ease-out both;
     }
 
@@ -1557,6 +1563,7 @@
       border-radius: 28px;
       background: #ffffff;
       box-shadow: 0 24px 80px rgba(0, 0, 0, 0.3);
+      contain: layout paint;
       animation: detailRiseIn 320ms cubic-bezier(0.2, 0.82, 0.25, 1) both;
     }
 
@@ -1579,6 +1586,12 @@
       width: 100%;
       height: auto;
       margin-top: calc(-1 * var(--detail-body-trim, 0%));
+      opacity: 0;
+      transition: opacity 180ms ease;
+    }
+
+    .album-detail-page.is-ready {
+      opacity: 1;
     }
 
     .album-detail-hero {
@@ -2073,9 +2086,9 @@
     <section class="screen" aria-label="画面 4">
       <div class="stage">
         <h1 class="albums-heading">翻开特辑，走进一个人的生活</h1>
-        <button class="album-card album-card-1" type="button" aria-label="查看大学路生活特辑详情" data-hero="assets/album-detail/detail-2-cover-v2.webp" data-hero-height="640" data-detail="assets/album-detail/detail-2-content-v2.webp" data-header="assets/album-detail/detail-2-header-v2.webp" data-body-trim="0%" data-end-space="24px" data-detail-alt="大学路生活特辑详情"><img data-src="assets/albums/album-1.webp" loading="lazy" decoding="async" alt="大学毕业前，和室友吃完的大学路"></button>
-        <button class="album-card album-card-2" type="button" aria-label="查看上海老街生活特辑详情" data-hero="assets/album-detail/detail-1-cover-v2.webp" data-hero-height="640" data-detail="assets/album-detail/detail-1-content-v2.webp" data-header="assets/album-detail/detail-1-scrolled.webp" data-body-trim="0%" data-end-space="24px" data-detail-alt="上海老街生活特辑详情"><img data-src="assets/albums/album-2.webp" loading="lazy" decoding="async" alt="在上海的老街边，还有一些慢下来的手艺"></button>
-        <button class="album-card album-card-3" type="button" aria-label="查看四川旅行生活特辑详情" data-hero="assets/album-detail/detail-3-cover-v2.webp" data-hero-height="640" data-detail="assets/album-detail/detail-3-content-v2.webp" data-header="assets/album-detail/detail-3-header-v2.webp" data-body-trim="0%" data-end-space="24px" data-detail-alt="四川旅行生活特辑详情"><img data-src="assets/albums/album-3.webp" loading="lazy" decoding="async" alt="不赶景点的四川旅行"></button>
+        <button class="album-card album-card-1" type="button" aria-label="查看大学路生活特辑详情" data-hero="assets/album-detail/detail-2-hero-v3.webp" data-hero-height="640" data-detail="assets/album-detail/detail-2-content-v2.webp" data-header="assets/album-detail/detail-2-header-v2.webp" data-body-trim="0%" data-end-space="24px" data-detail-alt="大学路生活特辑详情"><img data-src="assets/albums/album-1.webp?v=20260713-fast" loading="lazy" decoding="async" alt="大学毕业前，和室友吃完的大学路"></button>
+        <button class="album-card album-card-2" type="button" aria-label="查看上海老街生活特辑详情" data-hero="assets/album-detail/detail-1-hero-v3.webp" data-hero-height="640" data-detail="assets/album-detail/detail-1-content-v2.webp" data-header="assets/album-detail/detail-1-scrolled.webp" data-body-trim="0%" data-end-space="24px" data-detail-alt="上海老街生活特辑详情"><img data-src="assets/albums/album-2.webp?v=20260713-fast" loading="lazy" decoding="async" alt="在上海的老街边，还有一些慢下来的手艺"></button>
+        <button class="album-card album-card-3" type="button" aria-label="查看四川旅行生活特辑详情" data-hero="assets/album-detail/detail-3-hero-v3.webp" data-hero-height="640" data-detail="assets/album-detail/detail-3-content-v2.webp" data-header="assets/album-detail/detail-3-header-v2.webp" data-body-trim="0%" data-end-space="24px" data-detail-alt="四川旅行生活特辑详情"><img data-src="assets/albums/album-3.webp?v=20260713-fast" loading="lazy" decoding="async" alt="不赶景点的四川旅行"></button>
         <p class="albums-hint">可点击查看特辑详情</p>
         <p class="albums-credit">大众点评「个人清单」概念提案</p>
       </div>
@@ -2253,9 +2266,11 @@
     let transitionLocked = false;
     let touchStartY = 0;
     let activeAlbumTrigger = null;
+    let albumDetailLoadId = 0;
     let albumDetailsPreloadScheduled = false;
-    const albumPreloadImages = [];
-    const albumPreloadedUrls = new Set();
+    const albumPreloadImages = new Map();
+    const albumPreloadPromises = new Map();
+    const albumFetchPromises = new Map();
     let creationAssetsPreloaded = false;
     let creationFlowStep = "locations";
     let merchantAddLocked = false;
@@ -2303,6 +2318,15 @@
       if (priority !== "auto") image.fetchPriority = priority;
       image.src = image.dataset.src;
       image.removeAttribute("data-src");
+
+      if (image.matches(".album-card > img")) {
+        const reveal = () => image.classList.add("is-loaded");
+        if (typeof image.decode === "function") {
+          image.decode().then(reveal, reveal);
+        } else {
+          image.addEventListener("load", reveal, { once: true });
+        }
+      }
     }
 
     function hydrateImagesStaggered(root, interval = 120, priority = "low") {
@@ -2321,8 +2345,10 @@
       }
 
       if (index === 3) {
-        screen.querySelectorAll(".album-card > img[data-src]").forEach((image, imageIndex) => {
-          window.setTimeout(() => hydrateImage(image, imageIndex === 1 ? "high" : "low"), imageIndex * 120);
+        const albumImages = Array.from(screen.querySelectorAll(".album-card > img[data-src]"));
+        [1, 0, 2].forEach((imageIndex, loadIndex) => {
+          const image = albumImages[imageIndex];
+          window.setTimeout(() => hydrateImage(image, loadIndex === 0 ? "high" : "low"), loadIndex * 140);
         });
         return;
       }
@@ -2338,20 +2364,46 @@
       }
     }
 
-    function preloadAlbumImage(url, priority = "low") {
-      if (!url || albumPreloadedUrls.has(url)) return;
-      albumPreloadedUrls.add(url);
-      const image = new Image();
-      image.decoding = "async";
-      image.fetchPriority = priority;
-      image.src = url;
-      albumPreloadImages.push(image);
+    function preloadAlbumImage(url, priority = "low", decode = false) {
+      if (!url) return Promise.resolve(null);
+
+      let image = albumPreloadImages.get(url);
+      if (!image) {
+        image = new Image();
+        image.decoding = "async";
+        image.fetchPriority = priority;
+        albumPreloadImages.set(url, image);
+        albumPreloadPromises.set(url, new Promise((resolve) => {
+          image.addEventListener("load", () => resolve(image), { once: true });
+          image.addEventListener("error", () => resolve(image), { once: true });
+        }));
+        image.src = url;
+      } else if (priority === "high") {
+        image.fetchPriority = "high";
+      }
+
+      const loaded = image.complete ? Promise.resolve(image) : albumPreloadPromises.get(url);
+      if (!decode || typeof image.decode !== "function") return loaded;
+      return loaded.then(() => image.decode().catch(() => undefined)).then(() => image);
+    }
+
+    function fetchAlbumAsset(url) {
+      if (!url) return Promise.resolve();
+      if (!albumFetchPromises.has(url)) {
+        albumFetchPromises.set(url, fetch(url, { cache: "force-cache" })
+          .then((response) => response.ok ? response.arrayBuffer() : undefined)
+          .then(() => undefined)
+          .catch(() => undefined));
+      }
+      return albumFetchPromises.get(url);
     }
 
     function warmAlbumDetail(trigger, priority = "high") {
-      preloadAlbumImage(trigger.dataset.hero, priority);
-      preloadAlbumImage(trigger.dataset.header, priority);
-      preloadAlbumImage(trigger.dataset.detail, priority);
+      return Promise.all([
+        preloadAlbumImage(trigger.dataset.hero, priority, true),
+        preloadAlbumImage(trigger.dataset.header, priority, true),
+        preloadAlbumImage(trigger.dataset.detail, priority, true)
+      ]);
     }
 
     function preloadAlbumDetails() {
@@ -2362,14 +2414,21 @@
       albumTriggers.forEach((trigger, index) => {
         window.setTimeout(() => {
           runWhenIdle(() => {
-            preloadAlbumImage(trigger.dataset.hero);
-            preloadAlbumImage(trigger.dataset.header);
-          }, 1800 + index * 400);
-        }, 1200 + index * 450);
+            preloadAlbumImage(trigger.dataset.hero, index === 1 ? "high" : "low", true);
+            preloadAlbumImage(trigger.dataset.header, "low", true);
+          }, 900 + index * 220);
+        }, 320 + index * 180);
+      });
 
+      const centerTrigger = albumTriggers[1];
+      window.setTimeout(() => {
+        runWhenIdle(() => preloadAlbumImage(centerTrigger.dataset.detail, "low", true), 1000);
+      }, 900);
+
+      [albumTriggers[0], albumTriggers[2]].forEach((trigger, index) => {
         window.setTimeout(() => {
-          runWhenIdle(() => preloadAlbumImage(trigger.dataset.detail), 2400);
-        }, 2600 + index * 650);
+          runWhenIdle(() => fetchAlbumAsset(trigger.dataset.detail), 1800);
+        }, 1700 + index * 700);
       });
     }
 
@@ -2613,6 +2672,7 @@
 
       window.setTimeout(() => {
         if (screens[next + 1]) runWhenIdle(() => hydrateScreenImages(next + 1, "low"));
+        if (next === 2) runWhenIdle(preloadAlbumDetails, 1600);
         if (next === 3) preloadAlbumDetails();
         if (next === 5) runWhenIdle(preloadCreationAssets, 1200);
       }, 650);
@@ -2631,14 +2691,16 @@
 
     function openAlbumDetail(trigger) {
       activeAlbumTrigger = trigger;
+      const loadId = ++albumDetailLoadId;
+      const detailUrl = trigger.dataset.detail;
       hydrateImages(albumDetailModal);
       albumDetailHeroImage.fetchPriority = "high";
-      albumDetailPage.fetchPriority = "high";
       albumDetailHeaderImage.fetchPriority = "high";
       albumDetailHeroImage.src = trigger.dataset.hero;
       albumDetailHero.style.setProperty("--detail-hero-height", trigger.dataset.heroHeight);
-      albumDetailPage.src = trigger.dataset.detail;
       albumDetailPage.alt = trigger.dataset.detailAlt;
+      albumDetailPage.classList.remove("is-ready");
+      albumDetailPage.removeAttribute("src");
       albumDetailPage.style.setProperty("--detail-body-trim", trigger.dataset.bodyTrim || "0%");
       albumDetailScroller.style.setProperty("--detail-end-space", trigger.dataset.endSpace || "0px");
       albumDetailHeaderImage.src = trigger.dataset.header;
@@ -2646,9 +2708,28 @@
       albumDetailShell.classList.remove("is-scrolled");
       albumDetailModal.hidden = false;
       albumDetailScroller.focus({ preventScroll: true });
+
+      window.requestAnimationFrame(() => {
+        preloadAlbumImage(detailUrl, "high", true).then(() => {
+          if (loadId !== albumDetailLoadId || activeAlbumTrigger !== trigger) return;
+          albumDetailPage.fetchPriority = "high";
+          albumDetailPage.src = detailUrl;
+          const revealDetail = () => {
+            if (loadId === albumDetailLoadId) albumDetailPage.classList.add("is-ready");
+          };
+          if (typeof albumDetailPage.decode === "function") {
+            albumDetailPage.decode().then(revealDetail, () => {
+              albumDetailPage.addEventListener("load", revealDetail, { once: true });
+            });
+          } else {
+            albumDetailPage.addEventListener("load", revealDetail, { once: true });
+          }
+        });
+      });
     }
 
     function closeAlbumDetail() {
+      albumDetailLoadId += 1;
       albumDetailModal.hidden = true;
       albumDetailShell.classList.remove("is-scrolled");
       activeAlbumTrigger?.focus({ preventScroll: true });
