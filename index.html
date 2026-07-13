@@ -652,7 +652,7 @@
     .creation-heading {
       position: absolute;
       left: 8.125%;
-      top: 40.6481%;
+      top: 36.9444%;
       width: 35%;
       margin: 0;
       color: #ffffff;
@@ -668,12 +668,60 @@
     .creation-subtitle {
       position: absolute;
       left: 8.125%;
-      top: 52.5%;
+      top: 47.1296%;
       margin: 0;
       color: rgba(255, 255, 255, 0.68);
       font-size: min(1.4583vw, 2.5926vh);
       line-height: 1.7143;
       white-space: nowrap;
+    }
+
+    .creation-button {
+      position: absolute;
+      top: 55.8333%;
+      left: 8.125%;
+      width: 15.625%;
+      height: 8.1481%;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: #ff6633;
+      color: #ffffff;
+      cursor: pointer;
+      font-family: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: min(1.875vw, 3.3333vh);
+      font-weight: 510;
+      line-height: 1.3333;
+      letter-spacing: 0;
+      transform-origin: center;
+      transition: filter 160ms ease, transform 160ms ease;
+    }
+
+    .screen.is-active .creation-button {
+      animation: creationButtonPulse 2.8s ease-in-out infinite;
+    }
+
+    @keyframes creationButtonPulse {
+      0%, 100% {
+        scale: 1;
+      }
+
+      50% {
+        scale: 1.03;
+      }
+    }
+
+    .creation-button:hover {
+      filter: brightness(1.06);
+    }
+
+    .creation-button:active {
+      transform: scale(0.98);
+    }
+
+    .creation-button:focus-visible {
+      outline: 3px solid rgba(255, 255, 255, 0.85);
+      outline-offset: 4px;
     }
 
     .creation-phone {
@@ -1191,9 +1239,9 @@
     }
 
     .why-tags li {
-      width: min(22.3958vw, 39.8148vh);
+      width: fit-content;
       height: min(5.7407vh, 3.2292vw);
-      padding-left: min(1.5625vw, 2.7778vh);
+      padding: 0 min(1.5625vw, 2.7778vh);
       border-radius: min(0.8333vw, 1.4815vh);
       background: #ffffff;
       color: #827b72;
@@ -1203,11 +1251,11 @@
     }
 
     .why-tags li:last-child {
-      width: min(21.875vw, 38.8889vh);
+      width: fit-content;
     }
 
     .why-tags li:nth-child(2) {
-      width: min(38.5417vw, 68.5185vh);
+      width: fit-content;
     }
 
     .why-conclusion {
@@ -1449,11 +1497,11 @@
   <main class="deck" aria-label="生活特辑 9 个画面">
     <section class="screen is-active" aria-label="画面 1">
       <div class="stage">
-        <img class="opening-paper paper-left-top" src="assets/opening-papers-svg/paper-left-top.svg" alt="">
-        <img class="opening-paper paper-left-bottom" src="assets/opening-papers-svg/paper-left-bottom.svg" alt="">
-        <img class="opening-paper paper-center" src="assets/opening-papers-svg/paper-center.svg" alt="">
-        <img class="opening-paper paper-right-top" src="assets/opening-papers-svg/paper-right-top.svg" alt="">
-        <img class="opening-paper paper-right-bottom" src="assets/opening-papers-svg/paper-right-bottom.svg" alt="">
+        <img class="opening-paper paper-left-top" src="assets/opening-papers-svg/paper-left-top.svg" decoding="async" fetchpriority="high" alt="">
+        <img class="opening-paper paper-left-bottom" src="assets/opening-papers-svg/paper-left-bottom.svg" decoding="async" fetchpriority="high" alt="">
+        <img class="opening-paper paper-center" src="assets/opening-papers-svg/paper-center.svg" decoding="async" fetchpriority="high" alt="">
+        <img class="opening-paper paper-right-top" src="assets/opening-papers-svg/paper-right-top.svg" decoding="async" fetchpriority="high" alt="">
+        <img class="opening-paper paper-right-bottom" src="assets/opening-papers-svg/paper-right-bottom.svg" decoding="async" fetchpriority="high" alt="">
         <h1 class="opening-copy">有些「特别之处」<br>只有你知道</h1>
       </div>
     </section>
@@ -1464,7 +1512,7 @@
         <p class="why-intro">生活家们的足迹、态度和分享，在点评一直存在，<br>只是散落在各个商户页和时间线里。</p>
         <ul class="why-tags" aria-label="内容类型">
           <li>打卡是单次的留痕“证明我来过”</li>
-          <li>评价是“表态好不好”，往往写完就沉</li>
+          <li>评价是“表态”，写完就沉</li>
           <li>收藏是“标记意图”，越存越废</li>
         </ul>
         <p class="why-conclusion">内容很多，但真实的人，被淹没了<br>缺少一个以「我」为中心的出口</p>
@@ -1533,6 +1581,7 @@
       <div class="stage">
         <h1 class="creation-heading">创建你的生活特辑</h1>
         <p class="creation-subtitle">把生活里美好的瞬间分享给同好的人</p>
+        <button class="creation-button" type="button">创建特辑</button>
         <img class="creation-phone creation-phone-2" data-src="assets/creation-screens/create-2.webp" loading="lazy" decoding="async" alt="选择想要收录的地点">
         <img class="creation-phone creation-phone-4" data-src="assets/creation-screens/create-4-v2.webp" loading="lazy" decoding="async" alt="编辑生活特辑标题">
         <img class="creation-phone creation-phone-5" data-src="assets/creation-screens/create-5-v3.webp" loading="lazy" decoding="async" alt="创建完成后的生活特辑">
@@ -1790,8 +1839,13 @@
 
     window.addEventListener("resize", updateBackground);
     hydrateImages(screens[0]);
-    if (screens[1]) hydrateImages(screens[1]);
     updateBackground();
+
+    window.setTimeout(() => {
+      if (screens[1] && activeIndex === 0) {
+        runWhenIdle(() => hydrateImages(screens[1]), 2000);
+      }
+    }, 2100);
 
     window.addEventListener("keydown", (event) => {
       if (!albumDetailModal.hidden) {
