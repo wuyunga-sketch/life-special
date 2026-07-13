@@ -102,6 +102,8 @@
     .screen.is-active .together-comment,
     .screen.is-active .creation-phone,
     .screen.is-active .people-card,
+    .screen.is-active .people-avatar,
+    .screen.is-active .people-avatar-tag,
     .screen.is-active .album-card,
     .screen.is-active .content-type-card,
     .screen.is-active .together-wave,
@@ -1356,22 +1358,29 @@
 
     .people-avatar {
       position: absolute;
-      left: 72.3438%;
-      top: 46.2037%;
-      width: 6.8667%;
+      left: 71.8016%;
+      top: 47.5546%;
+      z-index: 5;
+      width: 6.1802%;
       aspect-ratio: 1;
-      overflow: hidden;
-      border: min(0.1563vw, 0.2778vh) solid #ffffff;
+      box-sizing: border-box;
+      border: min(0.1406vw, 0.25vh) solid #ffffff;
       border-radius: 50%;
-      background: #b99c82;
+      object-fit: cover;
+      opacity: 0;
       box-shadow: 0 8px 24px rgba(105, 86, 67, 0.12);
+    }
+
+    .screen.is-active .people-avatar {
+      animation: avatarCoreIn 460ms cubic-bezier(0.2, 0.85, 0.25, 1) 180ms forwards;
     }
 
     .avatar-pulse {
       position: absolute;
-      left: 72.3438%;
-      top: 46.2037%;
-      width: 6.8667%;
+      left: 71.8016%;
+      top: 47.5546%;
+      z-index: 4;
+      width: 6.1802%;
       aspect-ratio: 1;
       border: min(0.1042vw, 0.1852vh) solid rgba(185, 156, 130, 0.48);
       border-radius: 50%;
@@ -1383,26 +1392,77 @@
       animation-delay: 1.4s;
     }
 
-    .people-avatar::before {
-      content: "";
+    .people-avatar-tag {
       position: absolute;
-      left: 35%;
-      top: 20%;
-      width: 30%;
-      aspect-ratio: 1;
-      border-radius: 50%;
-      background: #f5f3f0;
+      z-index: 6;
+      display: grid;
+      place-items: center;
+      border-radius: min(0.1042vw, 0.1852vh);
+      font-size: min(0.8854vw, 1.5741vh);
+      font-weight: 600;
+      line-height: 1.4118;
+      white-space: nowrap;
+      opacity: 0;
+      transform: rotate(var(--tag-rotate));
     }
 
-    .people-avatar::after {
-      content: "";
-      position: absolute;
-      left: 19%;
-      bottom: -12%;
-      width: 62%;
-      height: 55%;
-      border-radius: 50% 50% 0 0;
-      background: #f5f3f0;
+    .screen.is-active .people-avatar-tag {
+      animation: avatarTagIn 420ms cubic-bezier(0.2, 0.85, 0.25, 1) var(--tag-delay) forwards;
+    }
+
+    .people-avatar-tag-map {
+      left: 70.188%;
+      top: 55.7407%;
+      width: 6.4552%;
+      height: 2.9185%;
+      background: #303030;
+      color: #ffffff;
+      --tag-rotate: 5.38deg;
+      --tag-delay: 330ms;
+    }
+
+    .people-avatar-tag-alley {
+      left: 75.0505%;
+      top: 45.9731%;
+      width: 5.2417%;
+      height: 2.6509%;
+      background: #ffcf33;
+      color: #040404;
+      --tag-rotate: 4.81deg;
+      --tag-delay: 450ms;
+    }
+
+    .people-avatar-tag-detour {
+      left: 73.75%;
+      top: 58.0556%;
+      width: 4.6255%;
+      height: 2.7611%;
+      background: #ff6633;
+      color: #ffffff;
+      --tag-rotate: -9.62deg;
+      --tag-delay: 570ms;
+    }
+
+    @keyframes avatarCoreIn {
+      from {
+        opacity: 0;
+        transform: scale(0.88);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes avatarTagIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px) rotate(var(--tag-rotate)) scale(0.92);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) rotate(var(--tag-rotate)) scale(1);
+      }
     }
 
     .people-card {
@@ -1467,10 +1527,25 @@
       white-space: nowrap;
     }
 
+    .albums-subtitle {
+      position: absolute;
+      top: 29.1667%;
+      left: 50%;
+      width: 80%;
+      margin: 0;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.68);
+      font-size: min(1.4583vw, 2.5926vh);
+      font-weight: 400;
+      line-height: 1.5;
+      text-align: center;
+      white-space: nowrap;
+    }
+
     .album-card {
       position: absolute;
-      top: 39.8148%;
-      width: 35.6771%;
+      top: 42.5%;
+      width: 28.5417%;
       height: auto;
       margin: 0;
       padding: 0;
@@ -1509,17 +1584,17 @@
     }
 
     .album-card-1 {
-      left: -6.0938%;
+      left: 4.6094%;
       --float-delay: 0ms;
     }
 
     .album-card-2 {
-      left: 32.1875%;
+      left: 35.7552%;
       --float-delay: 700ms;
     }
 
     .album-card-3 {
-      left: 70.4688%;
+      left: 66.901%;
       --float-delay: 1400ms;
     }
 
@@ -2075,7 +2150,10 @@
           <span class="people-ring people-ring-inner"></span>
           <span class="avatar-pulse avatar-pulse-1"></span>
           <span class="avatar-pulse avatar-pulse-2"></span>
-          <span class="people-avatar"></span>
+          <img class="people-avatar" data-src="assets/around-person/avatar.webp?v=20260713" loading="lazy" decoding="async" alt="">
+          <span class="people-avatar-tag people-avatar-tag-map">大学路活地图</span>
+          <span class="people-avatar-tag people-avatar-tag-alley">专钻小巷子</span>
+          <span class="people-avatar-tag people-avatar-tag-detour">网红绕道</span>
           <img class="people-card people-card-warm" data-src="assets/around-person/warm-moments.webp?v=20260713-2" loading="lazy" decoding="async" alt="">
           <img class="people-card people-card-pairing" data-src="assets/around-person/food-pairing.webp?v=20260713-2" loading="lazy" decoding="async" alt="">
           <img class="people-card people-card-reason" data-src="assets/around-person/revisit-reason.webp?v=20260713-2" loading="lazy" decoding="async" alt="">
@@ -2086,9 +2164,10 @@
     <section class="screen" aria-label="画面 4">
       <div class="stage">
         <h1 class="albums-heading">翻开特辑，走进一个人的生活</h1>
-        <button class="album-card album-card-1" type="button" aria-label="查看大学路生活特辑详情" data-hero="assets/album-detail/detail-2-hero-v3.webp" data-hero-height="640" data-detail="assets/album-detail/detail-2-content-v2.webp" data-header="assets/album-detail/detail-2-header-v2.webp" data-body-trim="0%" data-end-space="24px" data-detail-alt="大学路生活特辑详情"><img data-src="assets/albums/album-1.webp?v=20260713-fast2" loading="lazy" decoding="async" alt="大学毕业前，和室友吃完的大学路"></button>
-        <button class="album-card album-card-2" type="button" aria-label="查看上海老街生活特辑详情" data-hero="assets/album-detail/detail-1-hero-v3.webp" data-hero-height="640" data-detail="assets/album-detail/detail-1-content-v2.webp" data-header="assets/album-detail/detail-1-scrolled.webp" data-body-trim="0%" data-end-space="24px" data-detail-alt="上海老街生活特辑详情"><img data-src="assets/albums/album-2.webp?v=20260713-fast2" loading="lazy" decoding="async" alt="在上海的老街边，还有一些慢下来的手艺"></button>
-        <button class="album-card album-card-3" type="button" aria-label="查看四川旅行生活特辑详情" data-hero="assets/album-detail/detail-3-hero-v3.webp" data-hero-height="640" data-detail="assets/album-detail/detail-3-content-v2.webp" data-header="assets/album-detail/detail-3-header-v2.webp" data-body-trim="0%" data-end-space="24px" data-detail-alt="四川旅行生活特辑详情"><img data-src="assets/albums/album-3.webp?v=20260713-fast2" loading="lazy" decoding="async" alt="不赶景点的四川旅行"></button>
+        <p class="albums-subtitle">每一本特辑，都是一个真实的人在述说触动自己的瞬间和记忆犹新</p>
+        <button class="album-card album-card-1" type="button" aria-label="查看大学路生活特辑详情" data-hero="assets/album-detail/detail-2-hero-v3.webp" data-hero-height="640" data-detail="assets/album-detail/detail-2-content-v2.webp" data-header="assets/album-detail/detail-2-header-v2.webp" data-body-trim="0%" data-end-space="24px" data-detail-alt="大学路生活特辑详情"><img data-src="assets/albums/album-1.webp?v=20260713-size2" loading="lazy" decoding="async" alt="大学毕业前，和室友吃完的大学路"></button>
+        <button class="album-card album-card-2" type="button" aria-label="查看上海老街生活特辑详情" data-hero="assets/album-detail/detail-1-hero-v3.webp" data-hero-height="640" data-detail="assets/album-detail/detail-1-content-v2.webp" data-header="assets/album-detail/detail-1-scrolled.webp" data-body-trim="0%" data-end-space="24px" data-detail-alt="上海老街生活特辑详情"><img data-src="assets/albums/album-2.webp?v=20260713-size2" loading="lazy" decoding="async" alt="在上海的老街边，还有一些慢下来的手艺"></button>
+        <button class="album-card album-card-3" type="button" aria-label="查看四川旅行生活特辑详情" data-hero="assets/album-detail/detail-3-hero-v3.webp" data-hero-height="640" data-detail="assets/album-detail/detail-3-content-v2.webp" data-header="assets/album-detail/detail-3-header-v2.webp" data-body-trim="0%" data-end-space="24px" data-detail-alt="四川旅行生活特辑详情"><img data-src="assets/albums/album-3.webp?v=20260713-size2" loading="lazy" decoding="async" alt="不赶景点的四川旅行"></button>
         <p class="albums-hint">可点击查看特辑详情</p>
         <p class="albums-credit">大众点评「个人清单」概念提案</p>
       </div>
