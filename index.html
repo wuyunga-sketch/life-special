@@ -84,6 +84,8 @@
       position: relative;
       width: min(100vw, calc(100vh * 16 / 9));
       height: min(100vh, calc(100vw * 9 / 16));
+      --stage-w: min(100vw, calc(100vh * 16 / 9));
+      --stage-h: min(100vh, calc(100vw * 9 / 16));
     }
 
     .stage img {
@@ -92,7 +94,16 @@
       -webkit-user-drag: none;
     }
 
-    .screen.is-active img,
+    .screen.is-active .opening-paper,
+    .screen.is-active .decision-phone,
+    .screen.is-active .decision-card,
+    .screen.is-active .profile-page,
+    .screen.is-active .together-card,
+    .screen.is-active .together-comment,
+    .screen.is-active .creation-phone,
+    .screen.is-active .people-card,
+    .screen.is-active .album-card,
+    .screen.is-active .content-type-card,
     .screen.is-active .together-wave,
     .screen.is-active .avatar-pulse {
       will-change: transform, opacity;
@@ -128,10 +139,11 @@
       position: absolute;
       height: auto;
       transform-origin: center center;
+      transform: translate3d(var(--stack-x, 0), var(--stack-y, 0), 0) rotate(var(--stack-rotate)) scale(0.86);
       opacity: 0;
     }
 
-    .screen.is-active .opening-paper {
+    body.is-ready .screen.is-active .opening-paper {
       animation-name: paperSpread, gentleFloat;
       animation-duration: 1280ms, 5.2s;
       animation-timing-function: cubic-bezier(0.22, 0.9, 0.18, 1), ease-in-out;
@@ -140,7 +152,7 @@
       animation-iteration-count: 1, infinite;
     }
 
-    .screen.is-active .opening-copy {
+    body.is-ready .screen.is-active .opening-copy {
       animation: titleReveal 520ms ease-out 1350ms forwards;
     }
 
@@ -557,8 +569,8 @@
 
     .paper-left-top {
       --appear-delay: 80ms;
-      --stack-left: 37.5208%;
-      --stack-top: 38.517%;
+      --stack-x: calc(var(--stage-w) * 0.330416);
+      --stack-y: calc(var(--stage-h) * 0.187948);
       --stack-rotate: -1.5deg;
       --final-rotate: -8.56deg;
       left: 4.4792%;
@@ -569,8 +581,8 @@
 
     .paper-left-bottom {
       --appear-delay: 150ms;
-      --stack-left: 36.7409%;
-      --stack-top: 37.5421%;
+      --stack-x: calc(var(--stage-w) * 0.383555);
+      --stack-y: calc(var(--stage-h) * -0.124579);
       --stack-rotate: 1.5deg;
       --final-rotate: 10.29deg;
       left: -1.6146%;
@@ -581,8 +593,8 @@
 
     .paper-center {
       --appear-delay: 0ms;
-      --stack-left: 31.9792%;
-      --stack-top: 32.5926%;
+      --stack-x: calc(var(--stage-w) * 0.005677);
+      --stack-y: calc(var(--stage-h) * -0.035185);
       --stack-rotate: 0deg;
       --final-rotate: 2.72deg;
       left: 31.4115%;
@@ -593,8 +605,8 @@
 
     .paper-right-top {
       --appear-delay: 110ms;
-      --stack-left: 38.0669%;
-      --stack-top: 39.1717%;
+      --stack-x: calc(var(--stage-w) * -0.326623);
+      --stack-y: calc(var(--stage-h) * 0.221347);
       --stack-rotate: 1deg;
       --final-rotate: 5.92deg;
       left: 70.7292%;
@@ -605,8 +617,8 @@
 
     .paper-right-bottom {
       --appear-delay: 190ms;
-      --stack-left: 35.9609%;
-      --stack-top: 36.6087%;
+      --stack-x: calc(var(--stage-w) * -0.313115);
+      --stack-y: calc(var(--stage-h) * -0.132691);
       --stack-rotate: -1deg;
       --final-rotate: -10.39deg;
       left: 67.2724%;
@@ -617,10 +629,8 @@
 
     @keyframes paperSpread {
       0% {
-        left: var(--stack-left);
-        top: var(--stack-top);
         opacity: 0;
-        transform: rotate(var(--stack-rotate)) scale(0.86);
+        transform: translate3d(var(--stack-x), var(--stack-y), 0) rotate(var(--stack-rotate)) scale(0.86);
       }
 
       12% {
@@ -633,7 +643,7 @@
 
       100% {
         opacity: 1;
-        transform: rotate(var(--final-rotate)) scale(1);
+        transform: translate3d(0, 0, 0) rotate(var(--final-rotate)) scale(1);
       }
     }
 
@@ -1497,11 +1507,11 @@
   <main class="deck" aria-label="生活特辑 9 个画面">
     <section class="screen is-active" aria-label="画面 1">
       <div class="stage">
-        <img class="opening-paper paper-left-top" src="assets/opening-papers-svg/paper-left-top.svg" decoding="async" fetchpriority="high" alt="">
-        <img class="opening-paper paper-left-bottom" src="assets/opening-papers-svg/paper-left-bottom.svg" decoding="async" fetchpriority="high" alt="">
+        <img class="opening-paper paper-left-top" src="assets/opening-papers-svg/paper-left-top.svg" decoding="async" alt="">
+        <img class="opening-paper paper-left-bottom" src="assets/opening-papers-svg/paper-left-bottom.svg" decoding="async" alt="">
         <img class="opening-paper paper-center" src="assets/opening-papers-svg/paper-center.svg" decoding="async" fetchpriority="high" alt="">
-        <img class="opening-paper paper-right-top" src="assets/opening-papers-svg/paper-right-top.svg" decoding="async" fetchpriority="high" alt="">
-        <img class="opening-paper paper-right-bottom" src="assets/opening-papers-svg/paper-right-bottom.svg" decoding="async" fetchpriority="high" alt="">
+        <img class="opening-paper paper-right-top" src="assets/opening-papers-svg/paper-right-top.svg" decoding="async" alt="">
+        <img class="opening-paper paper-right-bottom" src="assets/opening-papers-svg/paper-right-bottom.svg" decoding="async" alt="">
         <h1 class="opening-copy">有些「特别之处」<br>只有你知道</h1>
       </div>
     </section>
@@ -1840,6 +1850,12 @@
     window.addEventListener("resize", updateBackground);
     hydrateImages(screens[0]);
     updateBackground();
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        document.body.classList.add("is-ready");
+      });
+    });
 
     window.setTimeout(() => {
       if (screens[1] && activeIndex === 0) {
