@@ -923,6 +923,11 @@
       cursor: grabbing;
     }
 
+    .merchant-candidate.is-dragging {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
     .merchant-candidate.is-adding {
       pointer-events: none;
       animation: merchantCardOut 180ms ease-in forwards;
@@ -950,7 +955,7 @@
       width: 27%;
       aspect-ratio: 1;
       place-items: center;
-      padding: 0;
+      padding: 0 0 1cqw;
       border: 0;
       border-radius: 36%;
       background: #ffffff;
@@ -1028,7 +1033,7 @@
       width: 6.8cqw;
       aspect-ratio: 1;
       place-items: center;
-      padding: 0;
+      padding: 0 0 1cqw;
       border: 0;
       border-radius: 50%;
       background: rgba(0, 0, 0, 0.62);
@@ -2583,9 +2588,9 @@
     }
 
     function addMerchant(id) {
-      if (merchantAddLocked || selectedMerchantIds.includes(id) || selectedMerchantIds.length >= 3) return;
+      if (merchantAddLocked || selectedMerchantIds.includes(id) || selectedMerchantIds.length >= 3) return false;
       const candidateIndex = candidateMerchantIds.indexOf(id);
-      if (candidateIndex < 0) return;
+      if (candidateIndex < 0) return false;
 
       merchantAddLocked = true;
       const candidateCard = merchantBoard.querySelector(`[data-merchant-id="${id}"]`);
@@ -2604,6 +2609,7 @@
         updateMerchantTrayState();
         merchantAddLocked = false;
       }, 180);
+      return true;
     }
 
     function removeMerchant(id) {
@@ -2622,7 +2628,8 @@
       const ghost = card.querySelector("img").cloneNode();
       ghost.className = "merchant-drag-ghost";
       document.body.append(ghost);
-      touchMerchantDrag = { id, ghost, pointerId: event.pointerId };
+      card.classList.add("is-dragging");
+      touchMerchantDrag = { id, ghost, card, pointerId: event.pointerId };
       moveTouchMerchantDrag(event);
       window.addEventListener("pointermove", moveTouchMerchantDrag, { passive: false });
       window.addEventListener("pointerup", finishTouchMerchantDrag, { once: true });
@@ -2644,11 +2651,13 @@
       const trayRect = merchantSelectionTray.getBoundingClientRect();
       const overTray = event.clientX >= trayRect.left && event.clientX <= trayRect.right && event.clientY >= trayRect.top && event.clientY <= trayRect.bottom;
       const id = touchMerchantDrag.id;
-      cancelTouchMerchantDrag();
-      if (overTray) addMerchant(id);
+      const card = touchMerchantDrag.card;
+      cancelTouchMerchantDrag(false);
+      if (!overTray || !addMerchant(id)) card.classList.remove("is-dragging");
     }
 
-    function cancelTouchMerchantDrag() {
+    function cancelTouchMerchantDrag(restoreCard = true) {
+      if (restoreCard) touchMerchantDrag?.card.classList.remove("is-dragging");
       touchMerchantDrag?.ghost.remove();
       touchMerchantDrag = null;
       merchantSelectionTray.classList.remove("is-drag-over");
